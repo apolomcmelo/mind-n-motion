@@ -76,6 +76,7 @@ body {
     fill: none;
     stroke: #D94260;
     stroke-width: 8;
+    filter: drop-shadow(-1px -0 1px rgba(0, 0, 0, 0.3));
 }
 
 .metric-circle .progress-ring {
@@ -83,6 +84,8 @@ body {
     stroke-width: 8;
     stroke-linecap: round;
     stroke: url(#GradientColor);
+    filter: drop-shadow(1px 1px 1px rgba(0, 240, 255, 0.2))
+            blur(0.15px);
     transition: stroke-dashoffset 0.4s, stroke 0.4s;
 }
 
