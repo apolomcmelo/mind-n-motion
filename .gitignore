@@ -175,4 +175,4 @@ package-lock.json
 *.idea/
 
 # Compiled files
-*.js
+#*.js

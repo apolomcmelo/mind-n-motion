@@ -17,29 +17,65 @@
 
       <!-- Metrics Section -->
       <div class="metrics-container border-gradient">
-        <div class="metric">
+        <div id="interest-metric" class="metric">
           <span>Interest</span>
-          <div class="metric-circle" data-percentage="75"></div>
+          <div class="metric-circle">
+            <svg xmlns="http://www.w3.org/2000/svg">
+              <circle class="progress-background" cx="35" cy="35" r="28"/>
+              <circle class="progress-ring" cx="35" cy="35" r="28"/>
+            </svg>
+            <div class="percentage-label"></div>
+          </div>
         </div>
-        <div class="metric">
+        <div id="excitement-metric" class="metric">
           <span>Excitement</span>
-          <div class="metric-circle" data-percentage="93"></div>
+          <div class="metric-circle">
+            <svg xmlns="http://www.w3.org/2000/svg">
+              <circle class="progress-background" cx="35" cy="35" r="28"/>
+              <circle class="progress-ring" cx="35" cy="35" r="28"/>
+            </svg>
+            <div class="percentage-label"></div>
+          </div>
         </div>
-        <div class="metric">
+        <div id="attention-metric" class="metric">
           <span>Attention</span>
-          <div class="metric-circle" data-percentage="45"></div>
+          <div class="metric-circle">
+            <svg xmlns="http://www.w3.org/2000/svg">
+              <circle class="progress-background" cx="35" cy="35" r="28"/>
+              <circle class="progress-ring" cx="35" cy="35" r="28"/>
+            </svg>
+            <div class="percentage-label"></div>
+          </div>
         </div>
-        <div class="metric">
+        <div id="engagement-metric" class="metric">
           <span>Engagement</span>
-          <div class="metric-circle" data-percentage="60"></div>
+          <div class="metric-circle">
+            <svg xmlns="http://www.w3.org/2000/svg">
+              <circle class="progress-background" cx="35" cy="35" r="28"/>
+              <circle class="progress-ring" cx="35" cy="35" r="28"/>
+            </svg>
+            <div class="percentage-label"></div>
+          </div>
         </div>
-        <div class="metric">
+        <div id="relaxation-metric" class="metric">
           <span>Relaxation</span>
-          <div class="metric-circle" data-percentage="40"></div>
+          <div class="metric-circle">
+            <svg xmlns="http://www.w3.org/2000/svg">
+              <circle class="progress-background" cx="35" cy="35" r="28"/>
+              <circle class="progress-ring" cx="35" cy="35" r="28"/>
+            </svg>
+            <div class="percentage-label"></div>
+          </div>
         </div>
-        <div class="metric">
+        <div id="stress-metric" class="metric">
           <span>Stress</span>
-          <div class="metric-circle" data-percentage="3"></div>
+          <div class="metric-circle">
+            <svg xmlns="http://www.w3.org/2000/svg">
+              <circle class="progress-background" cx="35" cy="35" r="28"/>
+              <circle class="progress-ring" cx="35" cy="35" r="28"/>
+            </svg>
+            <div class="percentage-label"></div>
+          </div>
         </div>
       </div>
 
@@ -55,19 +91,17 @@
           loading="lazy"
           referrerpolicy="no-referrer-when-downgrade">
         </iframe>
-        </div>
       </div>
-
-      <svg xmlns="http://www.w3.org/2000/svg">
-          <defs>
-            <linearGradient id="GradientColor">
-              <stop offset="0%" stop-color="#00F0FF"/>
-              <stop offset="100%" stop-color="#9D00FF"/>
-            </linearGradient>
-          </defs>
-      </svg>
     </div>
 
+    <svg xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="GradientColor">
+          <stop offset="0%" stop-color="#00F0FF"/>
+          <stop offset="100%" stop-color="#9D00FF"/>
+        </linearGradient>
+      </defs>
+    </svg>
     <script src="scripts.js"></script>
 
   </body>

@@ -32,9 +32,9 @@ body {
     border-radius: 8px;
     border-image-slice: 1;
     border-image-source: linear-gradient(
-            rgba(0, 240, 255, 0.15),
-            rgba(157, 0, 255, 0.4),
-            rgba(57, 10, 92, 100)
+        rgba(0, 240, 255, 0.15),
+        rgba(157, 0, 255, 0.4),
+        rgba(57, 10, 92, 100)
     );
 }
 
@@ -59,13 +59,12 @@ body {
     font-family: 'Ruda', sans-serif;
     color: rgba(255, 255, 255, 0.74);
 }
-
 .metric-circle {
     width: 70px;
     height: 70px;
     position: relative;
+    margin: 6px 0;
 }
-
 .metric-circle svg {
     width: 100%;
     height: 100%;
