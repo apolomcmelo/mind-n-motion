@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Mind 'n Motion</title>
+
+    <link rel="stylesheet" href="styles.css">
+    <link href='https://fonts.googleapis.com/css?family=Ruda' rel='stylesheet'>
+    <link href='https://fonts.googleapis.com/css?family=Righteous' rel='stylesheet'>
+    <link href='https://fonts.googleapis.com/earlyaccess/nicomoji.css' rel='stylesheet'>
+  </head>
+
+  <body>
+    <div class="app-container">
+
+      <!-- Metrics Section -->
+      <div class="metrics-container border-gradient">
+        <div id="interest-metric" class="metric">
+          <span>Interest</span>
+          <div class="metric-circle">
+            <svg xmlns="http://www.w3.org/2000/svg">
+              <circle class="progress-background" cx="35" cy="35" r="28"/>
+              <circle class="progress-ring" cx="35" cy="35" r="28"/>
+            </svg>
+            <div class="percentage-label"></div>
+          </div>
+        </div>
+        <div id="excitement-metric" class="metric">
+          <span>Excitement</span>
+          <div class="metric-circle">
+            <svg xmlns="http://www.w3.org/2000/svg">
+              <circle class="progress-background" cx="35" cy="35" r="28"/>
+              <circle class="progress-ring" cx="35" cy="35" r="28"/>
+            </svg>
+            <div class="percentage-label"></div>
+          </div>
+        </div>
+        <div id="attention-metric" class="metric">
+          <span>Attention</span>
+          <div class="metric-circle">
+            <svg xmlns="http://www.w3.org/2000/svg">
+              <circle class="progress-background" cx="35" cy="35" r="28"/>
+              <circle class="progress-ring" cx="35" cy="35" r="28"/>
+            </svg>
+            <div class="percentage-label"></div>
+          </div>
+        </div>
+        <div id="engagement-metric" class="metric">
+          <span>Engagement</span>
+          <div class="metric-circle">
+            <svg xmlns="http://www.w3.org/2000/svg">
+              <circle class="progress-background" cx="35" cy="35" r="28"/>
+              <circle class="progress-ring" cx="35" cy="35" r="28"/>
+            </svg>
+            <div class="percentage-label"></div>
+          </div>
+        </div>
+        <div id="relaxation-metric" class="metric">
+          <span>Relaxation</span>
+          <div class="metric-circle">
+            <svg xmlns="http://www.w3.org/2000/svg">
+              <circle class="progress-background" cx="35" cy="35" r="28"/>
+              <circle class="progress-ring" cx="35" cy="35" r="28"/>
+            </svg>
+            <div class="percentage-label"></div>
+          </div>
+        </div>
+        <div id="stress-metric" class="metric">
+          <span>Stress</span>
+          <div class="metric-circle">
+            <svg xmlns="http://www.w3.org/2000/svg">
+              <circle class="progress-background" cx="35" cy="35" r="28"/>
+              <circle class="progress-ring" cx="35" cy="35" r="28"/>
+            </svg>
+            <div class="percentage-label"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Speedometer Section -->
+      <div class="speedometer">
+        <div class="speed-value">123</div>
+        <div class="speed-unit">km/h</div>
+      </div>
+
+      <!-- Map Section -->
+      <div class="map-container border-gradient">
+        <iframe id="map"
+          width="100%"
+          height="100%"
+          loading="lazy"
+          referrerpolicy="no-referrer-when-downgrade">
+        </iframe>
+      </div>
+    </div>
+
+    <svg xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="GradientColor">
+          <stop offset="0%" stop-color="#00F0FF"/>
+          <stop offset="100%" stop-color="#9D00FF"/>
+        </linearGradient>
+      </defs>
+    </svg>
+    <script src="scripts.js"></script>
+
+  </body>
+</html>
