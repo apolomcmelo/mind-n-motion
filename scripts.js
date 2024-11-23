@@ -1,5 +1,3 @@
-const GOOGLE_MAPS_API_KEY = "API_KEY" // TODO Remove the key before commiting
-
 const metrics = [
     { name: "Interest", score: 75 },
     { name: "Excitement", score: 93 },
@@ -26,7 +24,7 @@ function updateMetricsScore() {
 
 function initMap() {
     const map = document.getElementById("map")
-    const mapsUri = `https://www.google.com/maps/embed/v1/place?key=${GOOGLE_MAPS_API_KEY}&q=Rome`
+    const mapsUri = `https://www.google.com/maps/embed/v1/place?key=${config.GOOGLE_MAPS_API_KEY}&q=Rome`
 
     map.setAttribute("src", mapsUri);
 }
