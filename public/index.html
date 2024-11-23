@@ -6,6 +6,7 @@
 
     <title>Mind 'n Motion</title>
 
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.5.0/remixicon.min.css" integrity="sha512-T7lIYojLrqj7eBrV1NvUSZplDBi8mFyIEGFGdox8Bic92Col3GVrscbJkL37AJoDmF2iAh81fRpO4XZukI6kbA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link rel="stylesheet" href="styles.css">
     <link href='https://fonts.googleapis.com/css?family=Ruda' rel='stylesheet'>
     <link href='https://fonts.googleapis.com/css?family=Righteous' rel='stylesheet'>
@@ -81,7 +82,7 @@
 
       <!-- Speedometer Section -->
       <div class="speedometer">
-        <div class="speed-value">123</div>
+        <div class="speed-value">0</div>
         <div class="speed-unit">km/h</div>
       </div>
 
@@ -94,6 +95,29 @@
           referrerpolicy="no-referrer-when-downgrade">
         </iframe>
       </div>
+
+      <!-- Button Section -->
+      <nav class="button-container">
+        <ul class="nav__list">
+          <li>
+            <a href="#settings" class="nav__link">
+              <i class="ri-settings-4-line"></i>
+            </a>
+          </li>
+
+          <li>
+            <button id="start-button" class="start-button">
+              <i class="ri-play-fill start-button-icon" id="start-button-icon"></i>
+            </button>
+          </li>
+
+          <li>
+            <a href="#report" class="nav__link">
+              <i class="ri-line-chart-line"></i>
+            </a>
+          </li>
+        </ul>
+      </nav>
 
       <svg xmlns="http://www.w3.org/2000/svg">
         <defs>
