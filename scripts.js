@@ -22,14 +22,26 @@ function updateMetricsScore() {
     })
 }
 
-function initMap() {
+function loadMap(location) {
     const map = document.getElementById("map")
-    const mapsUri = `https://www.google.com/maps/embed/v1/place?key=${config.GOOGLE_MAPS_API_KEY}&q=Rome`
+    const mapsUri = `https://www.google.com/maps/embed/v1/place?key=${config.GOOGLE_MAPS_API_KEY}&q=${location.latitude},${location.longitude}`
 
     map.setAttribute("src", mapsUri);
 }
 
+function getLocation() {
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+            (position) => loadMap(position.coords),
+            (error) => console.error("Error getting the current location", error),
+            {enableHighAccuracy: true}
+        );
+    } else {
+        console.warn("Geolocation is not supported by this browser.");
+    }
+}
+
 window.onload = () => {
     updateMetricsScore()
-    initMap()
+    getLocation()
 }
