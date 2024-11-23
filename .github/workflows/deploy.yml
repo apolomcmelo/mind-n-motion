@@ -17,7 +17,7 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Replace Maps API Key
-        run: sed -i '' -e 's|replace-me|${{ secrets.GOOGLE_MAPS_API_KEY }}|' ./config/config.js
+        run: pwd
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
