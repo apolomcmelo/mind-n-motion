@@ -1,10 +1,10 @@
 const metrics = [
-    { name: "Interest", score: 75 },
-    { name: "Excitement", score: 93 },
-    { name: "Attention", score: 45 },
-    { name: "Engagement", score: 60 },
-    { name: "Relaxation", score: 40 },
-    { name: "Stress", score: 3 }
+    { name: "Interest", score: 0 },
+    { name: "Excitement", score: 0 },
+    { name: "Attention", score: 0 },
+    { name: "Engagement", score: 0 },
+    { name: "Relaxation", score: 0 },
+    { name: "Stress", score: 0 }
 ]
 
 function updateMetricsScore() {

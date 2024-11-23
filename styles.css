@@ -9,7 +9,9 @@ html, body {
     font-family: 'Arial', sans-serif;
     box-sizing: border-box;
 }
-
+ul {
+    list-style-type: none;
+}
 .app-container {
     display: flex;
     flex-direction: column;
@@ -26,7 +28,6 @@ html, body {
     overflow: hidden;
 }
 
-/* Metrics Section */
 .border-gradient {
     border: 2px solid;
     border-radius: 8px;
@@ -38,6 +39,7 @@ html, body {
     );
 }
 
+/* Metrics Section */
 .metrics-container {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -50,7 +52,6 @@ html, body {
     );
     text-align: center;
 }
-
 .metric {
     display: flex;
     flex-direction: column;
@@ -70,14 +71,12 @@ html, body {
     height: 100%;
     transform: rotate(-90deg);
 }
-
 .metric-circle .progress-background {
     fill: none;
     stroke: #D94260;
     stroke-width: 8;
     filter: drop-shadow(-1px -0 1px rgba(0, 0, 0, 0.3));
 }
-
 .metric-circle .progress-ring {
     fill: none;
     stroke-width: 8;
@@ -87,7 +86,6 @@ html, body {
             blur(0.15px);
     transition: stroke-dashoffset 0.4s, stroke 0.4s;
 }
-
 .metric-circle .percentage-label {
     position: absolute;
     top: 50%;
@@ -114,13 +112,11 @@ html, body {
         transparent 70%
     );
 }
-
 .speed-value {
     font-size: 48px;
     font-family: 'Righteous', sans-serif;
     color: #FFF;
 }
-
 .speed-unit {
     font-size: 14px;
     color: rgba(255, 255, 255, 0.74);
@@ -144,10 +140,66 @@ html, body {
     background: radial-gradient(circle, transparent 10%, rgba(10, 10, 30, 0.7) 100%);
     pointer-events: none;
 }
-
 iframe {
     filter: invert(90%) hue-rotate(180deg) contrast(95%);
     border: none;
+}
+
+/* Button Container */
+.button-container {
+    position: fixed;
+    bottom: 60px;
+    left: 0;
+    right: 0;
+    z-index: 99;
+    width: 30%;
+    background: linear-gradient(
+        rgba(10, 10, 10, 0.4) 0,
+        rgba(0, 0, 0, 0.6) 100%
+    );
+    margin-inline: auto;
+    box-shadow: 0 2px 16px rgba(0,0,0,0.4);
+    padding: 0 1.75rem;
+    border-radius: 4rem;
+}
+.nav__list {
+    display: flex;
+    padding: 0;
+    justify-content: space-around;
+    align-items: center;
+}
+.nav__link {
+    color: #CCC;
+    font-size: 2rem;
+    text-decoration: none;
+    transition: color 0.4s;
+}
+.nav__link:hover {
+    color: #FFFFFF;
+}
+
+.start-button {
+    border: none;
+    outline: none;
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    padding: 0 21px;
+    background-color: #9D00FF;
+    text-align: center;
+    transition: color 0.3s, filter 0.3s;
+    cursor: pointer;
+}
+.start-button-icon {
+    font-size: 2rem;
+    color: #FFFFFF;
+    cursor: pointer;
+}
+.start-button:hover{
+    background-color: #A624FF;
+    filter: drop-shadow(0 0 4px rgba(163, 37, 250, 0.8))
+            blur(0.15px);
+    cursor: pointer;
 }
 
 * {
