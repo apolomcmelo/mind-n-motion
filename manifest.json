@@ -1,7 +1,7 @@
 {
   "name": "Mind 'n Motion",
-  "short_name": "MnM",
-  "start_url": "/",
+  "short_name": "Mind 'n Motion",
+  "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#1D1617",
   "theme_color": "#9D00FF",
