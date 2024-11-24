@@ -156,6 +156,13 @@ ul {
     color: var(--default-colour-all-white);
     opacity: var(--default-opacity-light-level-1);
 }
+canvas {
+    max-width: 10%;
+    max-height: 65px;
+    position: relative;
+    margin-bottom: 40px;
+    left: 45%;
+}
 
 /* Map Section */
 .map-container {

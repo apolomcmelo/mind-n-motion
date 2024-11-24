@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#9D00FF">
-    <link rel="manifest" href="manifest.json">
+<!--    <link rel="manifest" href="manifest.json">-->
 
     <title>Mind 'n Motion</title>
 
@@ -94,6 +94,9 @@
         <div class="speed-unit">km/h</div>
       </div>
 
+      <!-- Speed Chart experiment -->
+      <canvas id="speedChart"></canvas>
+
       <!-- Map Section -->
       <div id="map" class="map-container border-gradient"></div>
 
@@ -130,6 +133,7 @@
       </svg>
     </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="scripts.js"></script>
 
   </body>

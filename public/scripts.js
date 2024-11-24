@@ -15,6 +15,8 @@ const appProperties = {
     },
     map: null,
     watchId: null,
+    speedChart: null,
+    speedChartElement: document.getElementById('speedChart').getContext('2d'),
     speedHistory: [],
     journeyCoordinates: []
 }
@@ -61,7 +63,7 @@ function updateMetricsScore() {
 function updateSpeed(position) {
     const speedInKmPerHour = Math.round(position.coords.speed * 3.6);
     appProperties.dom.speedometer.textContent = `${speedInKmPerHour}`
-    appProperties.speedHistory.push({timestamp: position.timestamp, speed: speedInKmPerHour})
+    updateChartWith({timestamp: position.timestamp, speed: speedInKmPerHour})
 }
 
 function getCurrentLocation() {
@@ -106,8 +108,75 @@ function startServiceWorker() {
     });
 }
 
+function initSpeedChart() {
+    appProperties.speedChart = new Chart(appProperties.speedChartElement, {
+        type: 'line',
+        data: {
+            labels: appProperties.speedHistory.map(data => { formatTimestamp(data.timestamp)}), // X-axis labels
+            datasets: [{
+                label: 'Speed (km/h)',
+                data: appProperties.speedHistory.map(data => data.speed), // Y-axis data
+                borderColor: createChartGradient(appProperties.speedChartElement),
+                borderWidth: 2,
+                fill: false,
+                pointRadius: 0, // Hide the dots in the chart
+                tension: 0.4, // Smooth curve
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                x: {
+                    display: false,
+                },
+                y: {
+                    display: true,
+                }
+            },
+            plugins: {
+                legend: {
+                    display: false
+                }
+            }
+        }
+    });
+}
+
+function updateChartWith(newDataPoint) {
+    appProperties.speedHistory.push(newDataPoint);
+
+    appProperties.speedChart.data.labels.push(formatTimestamp(newDataPoint.timestamp));
+
+    appProperties.speedChart.data.datasets[0].data.push(newDataPoint.speed);
+    appProperties.speedChart.data.datasets[0].borderColor = createChartGradient(appProperties.speedChartElement);
+
+    appProperties.speedChart.update();
+}
+
+function createChartGradient(chartElement) {
+    // Create the gradient for the line
+    const gradient = chartElement.createLinearGradient(0, 0, chartElement.canvas.width, 0);
+    gradient.addColorStop(0, '#9D00FF');
+    gradient.addColorStop(1, '#00F0FF');
+
+    return gradient;
+}
+
+function formatTimestamp(timestamp) {
+    return new Date(timestamp).toLocaleTimeString('en-US', {hour12: false});
+}
+
 window.onload = () => {
     updateMetricsScore()
     getCurrentLocation()
+    initSpeedChart()
     startServiceWorker()
+
+    // Simulate adding new data points every 5 seconds
+    setInterval(() => {
+        const newTimestamp = Date.now();
+        const newSpeed = Math.floor(Math.random() * 120) + 60; // Random speed between 60 and 120
+        appProperties.dom.speedometer.textContent = `${newSpeed}`
+        updateChartWith({ timestamp: newTimestamp, speed: newSpeed });
+    }, 2000);
 }

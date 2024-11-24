@@ -1,4 +1,4 @@
-const version = `v1`
+const version = Date.now()
 const CACHE_NAME = `mind-n-motion-cache-${version}`;
 const ASSETS_TO_CACHE = [
     './index.html',
