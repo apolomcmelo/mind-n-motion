@@ -16,12 +16,6 @@ jobs:
       - name: Checkout the code
         uses: actions/checkout@v3
 
-      - name: Debug file existence
-        run: ls -al public
-
-      - name: Replace Maps API Key
-        run: sed -i -e 's|replace-me|${{ secrets.GOOGLE_MAPS_API_KEY }}|' public/config.js
-
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
         with:

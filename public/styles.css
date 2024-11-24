@@ -1,5 +1,4 @@
 :root {
-
     /* Colours */
     --default-colour-bright-purple_100: rgba(157, 0, 255, 1);
     --default-colour-bright-purple_40: rgba(157, 0, 255, 0.4);
@@ -26,7 +25,10 @@
     --default-colour-blueish-black_70: rgba(10, 10, 30, 0.7);
 
     /* Opacity */
-    --default-opacity-light-level-1: 0.74
+    --default-opacity-light-level-1: 0.74;
+
+    /* Z-Index */
+    --default-z-index-top: 999
 }
 
 html, body {
@@ -169,13 +171,13 @@ ul {
     left: 0;
     width: 100%;
     height: 100%;
-    z-index: 1;
+    z-index: calc(var(--default-z-index-top) - 1);
     background: radial-gradient(circle, transparent 10%, var(--default-colour-blueish-black_70) 100%);
     pointer-events: none;
 }
-iframe {
-    filter: invert(90%) hue-rotate(180deg) contrast(95%);
-    border: none;
+.leaflet-container {
+    background: none;
+    border-radius: 0;
 }
 
 /* Button Container */
@@ -184,7 +186,7 @@ iframe {
     bottom: 60px;
     left: 0;
     right: 0;
-    z-index: 999;
+    z-index: var(--default-z-index-top);
     width: 30%;
     background: linear-gradient(
         var(--default-colour-dark-gray_40) 0,

@@ -13,7 +13,7 @@ const appProperties = {
         startStopButtonIcon: document.getElementById('start-stop-button-icon'),
         speedometer: document.getElementById("speedometer")
     },
-    leafletMap: null,
+    map: null,
     watchId: null,
     speedHistory: [],
     journeyCoordinates: []
@@ -28,8 +28,7 @@ appProperties.dom.startStopButton.addEventListener('click', (event) => {
     } else {
         appProperties.watchId = navigator.geolocation.watchPosition(
             (position) => {
-                updateMap(position.coords)
-                updateLeafletMap(position.coords)
+                updatePositionOnMap(position.coords)
                 updateSpeed(position)
             },
             (error) => console.error("Error watching the position", error),
@@ -59,15 +58,6 @@ function updateMetricsScore() {
     })
 }
 
-function updateMap(position) {
-    const map = document.getElementById("map")
-    let currentPosition = `${position.latitude},${position.longitude}`;
-    // const mapsUri = `https://www.google.com/maps/embed/v1/streetview?key=${config.GOOGLE_MAPS_API_KEY}&location=${currentPosition}`
-    const mapsUri = `https://www.google.com/maps/embed/v1/place?key=${config.GOOGLE_MAPS_API_KEY}&q=${currentPosition}`
-
-    map.setAttribute("src", mapsUri);
-}
-
 function updateSpeed(position) {
     const speedInKmPerHour = Math.round(position.coords.speed * 3.6);
     appProperties.dom.speedometer.textContent = `${speedInKmPerHour}`
@@ -78,8 +68,7 @@ function getCurrentLocation() {
     if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(
             (position) => {
-                updateMap(position.coords)
-                initLeafletMap(position.coords)
+                initMap(position.coords)
             },
             (error) => console.error("Error getting the current location", error),
             {enableHighAccuracy: true}
@@ -89,25 +78,26 @@ function getCurrentLocation() {
     }
 }
 
-function initLeafletMap(position) {
+function initMap(position) {
     const latLong = [position.latitude,position.longitude];
-    appProperties.leafletMap = L.map('leafletMap').setView(latLong, 18);
+    appProperties.map = L.map('map').setView(latLong, 18);
     // Add OpenStreetMap tile layer
     L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
         maxZoom: 19,
-        attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-    }).addTo(appProperties.leafletMap);
+        attribution: '&copy; Apolo Mc Melo'
+    }).addTo(appProperties.map);
 
-    L.marker(latLong).addTo(appProperties.leafletMap);
+    L.marker(latLong).addTo(appProperties.map);
 }
 
-function updateLeafletMap(position) {
+function updatePositionOnMap(position) {
     const latLong = [position.latitude,position.longitude];
 
     appProperties.journeyCoordinates.push(latLong);
-    appProperties.leafletMap.setView(latLong, 18);
+    appProperties.map.setView(latLong, 18);
 
-    L.polyline(appProperties.journeyCoordinates, { color: 'blue' }).addTo(appProperties.leafletMap);
+    L.polyline(appProperties.journeyCoordinates, { color: 'blue' }).addTo(appProperties.map);
+    L.marker(latLong).addTo(appProperties.map);
 }
 
 window.onload = () => {
