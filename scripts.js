@@ -100,7 +100,14 @@ function updatePositionOnMap(position) {
     L.marker(latLong).addTo(appProperties.map);
 }
 
+function startServiceWorker() {
+    navigator.serviceWorker.register('./service-worker.js', {
+        scope: './'
+    });
+}
+
 window.onload = () => {
     updateMetricsScore()
     getCurrentLocation()
+    startServiceWorker()
 }
