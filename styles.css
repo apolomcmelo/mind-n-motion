@@ -211,24 +211,26 @@ iframe {
     color: var(--default-colour-all-white);
 }
 
-.start-button {
+.start-stop-button {
     border: none;
     outline: none;
     width: 70px;
     height: 70px;
     border-radius: 50%;
-    padding: 0 21px;
     background-color: var(--default-colour-bright-purple_100);
     text-align: center;
     transition: color 0.3s, filter 0.2s;
     cursor: pointer;
 }
-.start-button-icon {
+.start-stop-button:has(> i.ri-play-fill) {
+    padding: 0 21px;
+}
+.start-stop-button-icon {
     font-size: 2rem;
     color: var(--default-colour-all-white);
     cursor: pointer;
 }
-.start-button:hover{
+.start-stop-button:hover{
     background-color: #A624FF;
     filter: drop-shadow(0 0 10px var(--default-colour-bright-purple_40))
             blur(0.15px);
