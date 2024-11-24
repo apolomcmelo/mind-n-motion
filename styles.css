@@ -184,7 +184,7 @@ iframe {
     bottom: 60px;
     left: 0;
     right: 0;
-    z-index: 99;
+    z-index: 999;
     width: 30%;
     background: linear-gradient(
         var(--default-colour-dark-gray_40) 0,
