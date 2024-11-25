@@ -127,10 +127,12 @@ function initSpeedChart() {
             responsive: true,
             scales: {
                 x: {
-                    display: false,
+                    title: { display: false, text: 'Time (seconds)' },
+                    ticks: { autoSkip: true, maxTicksLimit: 10 }
                 },
                 y: {
-                    display: false,
+                    title: { display: false, text: 'Speed (km/h)' },
+                    beginAtZero: true
                 }
             },
             plugins: {
@@ -168,7 +170,7 @@ function formatTimestamp(timestamp) {
 
 function simulateMetricsChange() {
     metrics.forEach((metric) => {
-        metric.score = Math.floor(Math.random() * 100) + 20 // Random metric between 20 and 100
+        metric.score = Math.floor(Math.random() * 80) + 20 // Random metric between 20 and 100
     })
     updateMetricsScore()
 }
