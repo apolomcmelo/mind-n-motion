@@ -130,7 +130,7 @@ function initSpeedChart() {
                     display: false,
                 },
                 y: {
-                    display: true,
+                    display: false,
                 }
             },
             plugins: {
@@ -166,6 +166,20 @@ function formatTimestamp(timestamp) {
     return new Date(timestamp).toLocaleTimeString('en-US', {hour12: false});
 }
 
+function simulateMetricsChange() {
+    metrics.forEach((metric) => {
+        metric.score = Math.floor(Math.random() * 100) + 20 // Random metric between 20 and 100
+    })
+    updateMetricsScore()
+}
+
+function simulateSpeedChange() {
+    const newTimestamp = Date.now();
+    const newSpeed = Math.floor(Math.random() * 120) + 60; // Random speed between 60 and 120
+    appProperties.dom.speedometer.textContent = `${newSpeed}`
+    updateChartWith({timestamp: newTimestamp, speed: newSpeed});
+}
+
 window.onload = () => {
     updateMetricsScore()
     getCurrentLocation()
@@ -174,9 +188,7 @@ window.onload = () => {
 
     // Simulate adding new data points every 5 seconds
     setInterval(() => {
-        const newTimestamp = Date.now();
-        const newSpeed = Math.floor(Math.random() * 120) + 60; // Random speed between 60 and 120
-        appProperties.dom.speedometer.textContent = `${newSpeed}`
-        updateChartWith({ timestamp: newTimestamp, speed: newSpeed });
+        simulateMetricsChange();
+        simulateSpeedChange();
     }, 2000);
 }
