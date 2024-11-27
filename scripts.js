@@ -127,12 +127,17 @@ function initSpeedChart() {
             responsive: true,
             scales: {
                 x: {
-                    title: { display: false, text: 'Time (seconds)' },
-                    ticks: { autoSkip: true, maxTicksLimit: 10 }
+                    display: false,
+                    border: {
+                        display: false
+                    }
                 },
                 y: {
                     title: { display: false, text: 'Speed (km/h)' },
-                    beginAtZero: true
+                    ticks: { autoSkip: true, maxTicksLimit: 4 },
+                    beginAtZero: true,
+                    border: { display: false },
+                    grid: { color: '#393939' }
                 }
             },
             plugins: {
@@ -159,7 +164,7 @@ function createChartGradient(chartElement) {
     // Create the gradient for the line
     const gradient = chartElement.createLinearGradient(0, 0, chartElement.canvas.width, 0);
     gradient.addColorStop(0, '#9D00FF');
-    gradient.addColorStop(1, '#00F0FF');
+    gradient.addColorStop(0.25, '#00F0FF');
 
     return gradient;
 }
