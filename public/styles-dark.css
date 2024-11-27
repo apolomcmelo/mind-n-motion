@@ -187,16 +187,18 @@ canvas {
     left: 0;
     right: 0;
     z-index: var(--default-z-index-top);
-    width: 280px;
-    height: 65px;
+    min-width: 280px;
+    width: 50%;
+    max-width: 350px;
+    height: 80px;
     background: linear-gradient(
             var(--default-colour-dark-medium-gray_60) 0,
             var(--default-colour-dark-gray_90) 100%
     );
     margin-inline: auto;
     box-shadow: 0 2px 4px 0 var(--default-colour-all-black_30);
-    padding: 6px;
-    border-radius: 48px;
+    padding: 8px 24px;
+    border-radius: 50px;
 }
 /* Button Container */
 .nav__list {
@@ -222,8 +224,8 @@ canvas {
 .start-stop-button {
     border: none;
     outline: none;
-    width: 50px;
-    height: 50px;
+    width: 60px;
+    height: 60px;
     border-radius: 50%;
     background: linear-gradient(
             to bottom right,
@@ -237,7 +239,7 @@ canvas {
                 1px 1px 2px 0 var(--default-colour-all-black_60);
 }
 .start-stop-button:has(> i.ri-play-fill) {
-    padding: 0 10px;
+    padding-left: 10px;
 }
 .start-stop-button-icon {
     cursor: pointer;
