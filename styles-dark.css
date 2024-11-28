@@ -26,8 +26,8 @@
     --default-colour-all-black_60: rgba(0, 0, 0, 0.6);
     --default-colour-blueish-black_70: rgba(10, 10, 30, 0.7);
 
-    --default-primary-black: #171717;
-    --default-secondary-black: #222222;
+    --default-primary-black: #111111;
+    --default-secondary-black: #1F1F1F;
 
     /* Opacity */
     --default-opacity-light-level-1: 0.96;
