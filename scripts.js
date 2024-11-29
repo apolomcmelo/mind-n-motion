@@ -134,7 +134,7 @@ function updatePositionOnMap(position) {
     appProperties.map.setView(latLong, 18);
 
     L.polyline(appProperties.journeyCoordinates, { color: 'blue' }).addTo(appProperties.map);
-    L.marker(latLong).addTo(appProperties.map);
+    // L.marker(latLong).addTo(appProperties.map);
 }
 
 // #### Business Logic
@@ -209,9 +209,9 @@ function registerButtonListeners() {
     appProperties.dom.startStopButton.addEventListener('click', (event) => {
         loadRecordingPage();
 
-        if (appProperties.watchId) { // It is stopping
+        if (appProperties.watchId) {
             stopRecording();
-        } else { // It is starting
+        } else {
             startRecording();
 
         }
