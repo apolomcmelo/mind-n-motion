@@ -20,11 +20,12 @@ const appProperties = {
     watchId: null,
     speedChart: null,
     speedChartElement: document.getElementById('speedChart').getContext('2d'),
+    reportChart: null,
+    reportChartElement: document.getElementById('reportChart').getContext('2d'),
     speedHistory: [],
     metricsHistory: [],
     journeyCoordinates: []
 }
-
 
 // #### Metrics
 function updateMetricsScore(metric) {
@@ -138,6 +139,48 @@ function updatePositionOnMap(position) {
     // L.marker(latLong).addTo(appProperties.map);
 }
 
+// #### Report
+function initReportChart() {
+    appProperties.reportChart = new Chart(appProperties.reportChartElement, {
+        type: 'line',
+        data: {
+            labels: appProperties.speedHistory.map(data => { formatTimestamp(data.timestamp)}), // X-axis labels
+            datasets: [{
+                label: 'Speed (km/h)',
+                data: appProperties.speedHistory.map(data => data.speed), // Y-axis data
+                borderColor: createChartGradient(appProperties.reportChartElement),
+                borderWidth: 2,
+                fill: false,
+                pointRadius: 0, // Hide the dots in the chart
+                tension: 0.4, // Smooth curve
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                x: {
+                    display: false,
+                    border: {
+                        display: false
+                    }
+                },
+                y: {
+                    title: { display: false, text: 'Speed (km/h)' },
+                    ticks: { autoSkip: true, maxTicksLimit: 4 },
+                    beginAtZero: true,
+                    border: { display: false },
+                    grid: { color: '#393939' }
+                }
+            },
+            plugins: {
+                legend: {
+                    display: false
+                }
+            }
+        }
+    });
+}
+
 // #### Business Logic
 function startRecording() {
     localStorage.clear()
@@ -163,6 +206,8 @@ function stopRecording() {
 
     console.debug("Speed History", appProperties.speedHistory)
     console.debug("Metrics History", appProperties.metricsHistory)
+
+    initReportChart()
 
     appProperties.speedHistory = []
     appProperties.metricsHistory = []
@@ -223,7 +268,6 @@ function showPage(index) {
         }
     });
 }
-
 
 function registerButtonListeners() {
     appProperties.dom.startStopButton.addEventListener('click', (event) => {
