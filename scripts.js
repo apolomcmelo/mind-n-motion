@@ -9,6 +9,7 @@ const metrics = [
 
 const appProperties = {
     dom: {
+        pages: Array.from(document.querySelectorAll('.page')),
         settingsPageButton: document.getElementById("settings-page-button"),
         startStopButton: document.getElementById('start-stop-button'),
         startStopButtonIcon: document.getElementById('start-stop-button-icon'),
@@ -191,19 +192,38 @@ function loadRecordingPage() {
     appProperties.dom.startStopButtonIcon.classList.add("active");
     appProperties.dom.settingsPageButton.classList.remove("active");
     appProperties.dom.reportPageButton.classList.remove("active");
+
+    showPage(1)
 }
 
 function loadSettingsPage() {
     appProperties.dom.settingsPageButton.classList.add("active");
     appProperties.dom.startStopButtonIcon.classList.remove("active");
     appProperties.dom.reportPageButton.classList.remove("active");
+
+    showPage(0)
 }
 
 function loadReportPage() {
     appProperties.dom.reportPageButton.classList.add("active");
     appProperties.dom.startStopButtonIcon.classList.remove("active");
     appProperties.dom.settingsPageButton.classList.remove("active");
+
+    showPage(2)
 }
+
+function showPage(index) {
+    appProperties.dom.pages.forEach((page, i) => {
+        if (i === index) {
+            page.classList.add('active');
+            page.classList.remove('out-left', 'out-right');
+        } else {
+            page.classList.remove('active');
+            page.classList.add(i < index ? 'out-left' : 'out-right');
+        }
+    });
+}
+
 
 function registerButtonListeners() {
     appProperties.dom.startStopButton.addEventListener('click', (event) => {
@@ -245,6 +265,7 @@ function simulateSpeedChange() {
 
 window.onload = () => {
     registerButtonListeners()
+    loadRecordingPage() // This is the initial page
 
     metrics.forEach(metric => updateMetricsScore(metric))
     getCurrentLocation()

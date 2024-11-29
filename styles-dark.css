@@ -58,7 +58,7 @@ ul {
     flex-direction: column;
     height: 100%;
     width: 100%;
-    padding: 60px 24px 24px;
+    padding: 60px 24px 64px;
     margin: auto;
     background-image: radial-gradient(
         farthest-corner at 100px 100px,
@@ -67,6 +67,34 @@ ul {
     );
     border-radius: 8px;
     overflow: hidden;
+    position: relative;
+}
+.content {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+}
+/* Sliding Transitions */
+.page {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    justify-content: center;
+    align-items: center;
+    font-size: 24px;
+    color: var(--default-colour-medium-gray_80);
+    transition: transform 0.5s ease-in-out;
+}
+.page.active {
+    transform: translateX(0%);
+}
+.page.out-left {
+    transform: translateX(-100%);
+}
+.page.out-right {
+    transform: translateX(100%);
 }
 
 /* Metrics Section */
