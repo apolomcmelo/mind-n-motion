@@ -16,6 +16,7 @@
 
     --default-colour-very-light-gray: #EEEEEE;
     --default-colour-light-gray: #AAAAAA;
+    --default-colour-medium-gray_80: rgba(85, 85, 85, 0.8);
     --default-colour-dark-gray_40: rgba(10, 10, 10, 0.4);
     --default-colour-dark-medium-gray_60: rgba(53, 53, 53, 0.6);
     --default-colour-dark-gray_90: rgba(33, 33, 33, 0.9);
@@ -214,11 +215,19 @@ canvas {
 .nav__link {
     color: var(--default-colour-all-white_60);
     text-decoration: none;
-    transition: color 0.4s;
+    transition: color 0.4s, filter 0.4s;
     filter: drop-shadow(2px 2px 4px var(--default-colour-all-black_30));
 }
 .nav__link:hover {
     color: var(--default-colour-all-white);
+}
+.nav__link.active {
+    color: var(--default-colour-bright-blue_80);
+    filter: drop-shadow(1px 1px 1px var(--default-colour-bright-blue_100));
+}
+.nav__link.active:hover {
+    color: var(--default-colour-bright-blue_100);
+    filter: drop-shadow(1px 1px 2px var(--default-colour-bright-blue_100));
 }
 
 .start-stop-button {
@@ -244,15 +253,19 @@ canvas {
 .start-stop-button-icon {
     cursor: pointer;
     font-size: 34px;
-    color: var(--default-colour-bright-blue_80);
+    transition: color 0.4s, filter 0.2s;
+    color: var(--default-colour-medium-gray_80);
 }
-.start-stop-button-icon:hover {
-    color: var(--default-colour-bright-blue_highlight);
+.start-stop-button-icon.active {
+    color: var(--default-colour-bright-blue_80);
 }
 .start-stop-button:hover{
     box-shadow: 0 0 2px 0px var(--default-colour-all-black_60),
                 0 0 6px 1px var(--default-colour-bright-blue_100);
     cursor: pointer;
+}
+.start-stop-button:hover .start-stop-button-icon {
+    color: var(--default-colour-bright-blue_highlight);
 }
 
 * {
