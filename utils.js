@@ -11,20 +11,29 @@ function formatTimestamp(timestamp) {
     return new Date(timestamp).toLocaleTimeString('en-US', {hour12: false});
 }
 
-function createChartGradient(chartElement) {
-    // Create the gradient for the line
+function createChartHorizontalGradient(chartElement) {
     const gradient = chartElement.createLinearGradient(0, 0, chartElement.canvas.width, 0);
+
     gradient.addColorStop(0, '#9D00FF');
     gradient.addColorStop(0.25, '#00F0FF');
 
     return gradient;
 }
 
-function updateChartWith(chart, chartElement, newDataPoint) {
-    chart.data.labels.push(formatTimestamp(newDataPoint.timestamp));
+function createChartVerticalGradient(chartElement) {
+    const gradient = chartElement.createLinearGradient(0, 0, 0, chartElement.canvas.height);
 
-    chart.data.datasets[0].data.push(newDataPoint.speed);
-    chart.data.datasets[0].borderColor = createChartGradient(chartElement);
+    gradient.addColorStop(0, '#00F0FF');
+    gradient.addColorStop(1, '#9D00FF');
+
+    return gradient;
+}
+
+function updateChartWith(chart, chartElement, timestamp, value) {
+    chart.data.labels.push(formatTimestamp(timestamp));
+
+    chart.data.datasets[0].data.push(value);
+    chart.data.datasets[0].borderColor = createChartHorizontalGradient(chartElement);
 
     chart.update();
 }
