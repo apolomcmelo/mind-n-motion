@@ -39,6 +39,8 @@ function loadReportPage() {
     app.dom.settingsPageButton.classList.remove("active");
 
     showPage(2)
+
+    generateReport()
 }
 
 function showPage(index) {
