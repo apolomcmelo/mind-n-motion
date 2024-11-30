@@ -118,12 +118,16 @@ function initReportChart(parsedSpeedHistory, parsedInterestHistory, parsedExcite
                 scales: {
                     x: {
                         type: 'category', // Use formatted timestamps for X-axis
-                        title: { display: false, text: 'Time' },
-                        ticks: { autoSkip: true, maxTicksLimit: 10 }
+                        border: {
+                            display: false
+                        }
                     },
                     y: {
                         title: { display: false, text: 'Value' },
-                        beginAtZero: true
+                        ticks: { autoSkip: true, maxTicksLimit: 10 },
+                        beginAtZero: true,
+                        border: { display: false },
+                        grid: { color: '#282828' }
                     }
                 },
                 plugins: {

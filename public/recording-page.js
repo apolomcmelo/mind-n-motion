@@ -74,7 +74,7 @@ function initSpeedChart() {
                     ticks: { autoSkip: true, maxTicksLimit: 4 },
                     beginAtZero: true,
                     border: { display: false },
-                    grid: { color: '#393939' }
+                    grid: { color: '#282828' }
                 }
             },
             plugins: {
