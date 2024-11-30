@@ -62,46 +62,79 @@ function updatePositionOnMap(position) {
     L.polyline(report.journeyCoordinates, { color: 'blue' }).addTo(report.map);
 }
 
+function createSpeedDataset(data) {
+    return {
+        label: 'Speed',
+        data: data.map(dataPoint => ({
+            x: formatTimestamp(dataPoint.timestamp),
+            y: dataPoint.speed
+        })),
+        borderColor: createChartVerticalGradient(report.chartElement),
+        backgroundColor: 'rgba(0, 255, 255, 0.2)', // Semi-transparent fill
+        borderWidth: 2,
+        fill: false,
+        pointRadius: 0, // Hide the dots in the chart
+        tension: 0.4, // Smooth curve
+    }
+}
+
+function createMetricDataset(data, colour) {
+    return {
+        label: data[0].name,
+        data: data.map(dataPoint => ({
+            x: formatTimestamp(dataPoint.timestamp),
+            y: dataPoint.score
+        })),
+        borderColor: colour,
+        borderDash: [6, 3], // Dotted line
+        borderWidth: 2,
+        fill: false,
+        pointRadius: 0, // Hide the dots in the chart
+        tension: 0.2, // Smooth curve
+    }
+}
 // #### Report
-function initReportChart(speedHistory) {
-    report.reportChart = new Chart(report.chartElement, {
-        type: 'line',
-        data: {
-            labels: speedHistory.map(data => { formatTimestamp(data.timestamp)}), // X-axis labels
-            datasets: [{
-                label: 'Speed (km/h)',
-                data: speedHistory.map(data => data.speed), // Y-axis data
-                borderColor: createChartGradient(report.chartElement),
-                borderWidth: 2,
-                fill: false,
-                pointRadius: 0, // Hide the dots in the chart
-                tension: 0.4, // Smooth curve
-            }]
-        },
-        options: {
-            responsive: true,
-            scales: {
-                x: {
-                    display: false,
-                    border: {
-                        display: false
+function initReportChart(parsedSpeedHistory, parsedInterestHistory, parsedExcitementHistory, parsedAttentionHistory, parsedEngagementHistory, parsedRelaxationHistory, parsedStressHistory) {
+    if(report.chart) {
+        report.chart.update()
+    } else {
+        let datasets = []
+
+        datasets.push(createSpeedDataset(parsedSpeedHistory))
+        datasets.push(createMetricDataset(parsedInterestHistory, 'rgba(0, 0, 255, 0.5)'))
+        datasets.push(createMetricDataset(parsedExcitementHistory, 'rgba(0, 128, 0, 0.5)'))
+        datasets.push(createMetricDataset(parsedAttentionHistory, 'rgba(132, 128, 0, 0.5)'))
+        datasets.push(createMetricDataset(parsedEngagementHistory, 'rgba(0, 128, 88, 0.5)'))
+        datasets.push(createMetricDataset(parsedRelaxationHistory, 'rgba(156, 46, 0, 0.5)'))
+        datasets.push(createMetricDataset(parsedStressHistory, 'rgba(200, 45, 182, 0.5)'))
+
+        report.chart = new Chart(report.chartElement, {
+            type: 'line',
+            data: {
+                datasets: datasets
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    x: {
+                        type: 'category', // Use formatted timestamps for X-axis
+                        title: { display: false, text: 'Time' },
+                        ticks: { autoSkip: true, maxTicksLimit: 10 }
+                    },
+                    y: {
+                        title: { display: false, text: 'Value' },
+                        beginAtZero: true
                     }
                 },
-                y: {
-                    title: { display: false, text: 'Speed (km/h)' },
-                    ticks: { autoSkip: true, maxTicksLimit: 4 },
-                    beginAtZero: true,
-                    border: { display: false },
-                    grid: { color: '#393939' }
-                }
-            },
-            plugins: {
-                legend: {
-                    display: false
+                plugins: {
+                    legend: {
+                        display: true, // Display the legend
+                        position: 'bottom'
+                    }
                 }
             }
-        }
-    });
+        });
+    }
 }
 
 // #### Business Logic
@@ -139,6 +172,6 @@ function generateReport() {
         updateInfo(relaxationArray, report.dom.metrics.relaxation, "")
         updateInfo(stressArray, report.dom.metrics.stress, "")
 
-        initReportChart(parsedSpeedHistory)
+        initReportChart(parsedSpeedHistory, parsedInterestHistory, parsedExcitementHistory, parsedAttentionHistory, parsedEngagementHistory, parsedRelaxationHistory, parsedStressHistory)
     }
 }

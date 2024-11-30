@@ -38,9 +38,9 @@ function loadReportPage() {
     app.dom.startStopButtonIcon.classList.remove("active");
     app.dom.settingsPageButton.classList.remove("active");
 
-    showPage(2)
-
     generateReport()
+
+    showPage(2)
 }
 
 function showPage(index) {
@@ -85,7 +85,7 @@ window.onload = () => {
     metrics.forEach(metric => updateMetricsScore(metric))
     getCurrentLocation()
     initSpeedChart()
-    startServiceWorker()
+    // startServiceWorker()
 
     // Simulate adding new data points every 5 seconds
     setInterval(() => {

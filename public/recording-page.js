@@ -42,7 +42,7 @@ function updateSpeed(position) {
     recording.speedHistory.push(speedRecord);
 
     recording.speedometer.textContent = `${speedRecord.speed}`
-    updateChartWith(recording.chart, recording.chartElement, speedRecord);
+    updateChartWith(recording.chart, recording.chartElement, speedRecord.timestamp, speedRecord.speed);
 
 }
 function initSpeedChart() {
@@ -53,7 +53,7 @@ function initSpeedChart() {
             datasets: [{
                 label: 'Speed (km/h)',
                 data: recording.speedHistory.map(data => data.speed), // Y-axis data
-                borderColor: createChartGradient(recording.chartElement),
+                borderColor: createChartHorizontalGradient(recording.chartElement),
                 borderWidth: 2,
                 fill: false,
                 pointRadius: 0, // Hide the dots in the chart
@@ -85,7 +85,6 @@ function initSpeedChart() {
         }
     });
 }
-
 
 // #### Map
 function getCurrentLocation() {
@@ -137,8 +136,8 @@ function startRecording() {
 
 function stopRecording() {
     navigator.geolocation.clearWatch(recording.watchId);
-
     recording.watchId = null;
+
     localStorage.setItem("SpeedHistory", JSON.stringify(recording.speedHistory))
 
     metrics.forEach(metric => {
@@ -148,8 +147,6 @@ function stopRecording() {
 
     console.debug("Speed History", recording.speedHistory)
     console.debug("Metrics History", recording.metricsHistory)
-
-    // initReportChart()
 
     recording.speedHistory = []
     recording.metricsHistory = []
@@ -179,5 +176,5 @@ function simulateSpeedChange() {
     recording.speedometer.textContent = `${speedRecord.speed}`
     recording.speedHistory.push(speedRecord);
 
-    updateChartWith(recording.chart, recording.chartElement, speedRecord);
+    updateChartWith(recording.chart, recording.chartElement, speedRecord.timestamp, speedRecord.speed);
 }
