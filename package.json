@@ -1,0 +1,23 @@
+{
+    "name": "mind-n-motion",
+    "version": "1.0.0",
+    "description": "A PWA that used to map the correlation of driving speed and the brain metrics",
+    "scripts": {
+        "start": "snowpack dev",
+        "build": "snowpack build"
+    },
+    "author": "Apolo Mc Melo",
+    "license": "MIT",
+    "devDependencies": {
+        "@snowpack/plugin-typescript": "^1.2.1",
+        "@types/leaflet": "^1.9.14",
+        "rollup-plugin-node-polyfills": "^0.2.1",
+        "snowpack": "^3.7.1",
+        "typescript": "^4.9.5"
+    },
+    "dependencies": {
+        "chart.js": "^4.4.7",
+        "emotiv-ts": "^0.0.2",
+        "leaflet": "^1.9.4"
+    }
+}

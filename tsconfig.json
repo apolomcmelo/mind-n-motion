@@ -1,0 +1,12 @@
+{
+    "include": ["src", "types"],
+    "compilerOptions": {
+        "module": "ESNext",
+        "target": "ESNext",
+        "moduleResolution": "node",
+        "allowJs": true,
+        "jsx": "preserve",
+        "baseUrl": "./",
+        "type": "module"
+    }
+}
