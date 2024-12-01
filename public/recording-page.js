@@ -122,16 +122,24 @@ function updatePositionOnMap(position) {
     L.polyline(recording.journeyCoordinates, { color: 'blue' }).addTo(recording.map);
 }
 
+function resetData() {
+    localStorage.clear();
+    recording.speedHistory = []
+    recording.metricsHistory = []
+    recording.journeyCoordinates = []
+}
+
 // #### Business Logic
 function startRecording() {
-    localStorage.clear()
+    resetData();
+
     recording.watchId = navigator.geolocation.watchPosition(
         (position) => {
             updatePositionOnMap(position.coords)
             updateSpeed(position)
         },
         (error) => console.error("Error watching the position", error),
-        {enableHighAccuracy: true});
+        { enableHighAccuracy: true} );
 }
 
 function stopRecording() {
@@ -139,6 +147,7 @@ function stopRecording() {
     recording.watchId = null;
 
     localStorage.setItem("SpeedHistory", JSON.stringify(recording.speedHistory))
+    localStorage.setItem("JourneyCoordinates", JSON.stringify(recording.journeyCoordinates))
 
     metrics.forEach(metric => {
         const singleMetricHistory = recording.metricsHistory.filter(m => m.name === metric.name)
@@ -147,9 +156,7 @@ function stopRecording() {
 
     console.debug("Speed History", recording.speedHistory)
     console.debug("Metrics History", recording.metricsHistory)
-
-    recording.speedHistory = []
-    recording.metricsHistory = []
+    console.debug("Journey Coordinates", recording.journeyCoordinates)
 }
 
 // #### Simulation Functions
