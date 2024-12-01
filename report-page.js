@@ -88,7 +88,7 @@ function createMetricDataset(data, colour) {
         borderColor: colour,
         // backgroundColor: colour,
         // borderDash: [3, 3], // Dotted line
-        borderWidth: 2,
+        borderWidth: 1,
         fill: false,
         pointRadius: 0,
         tension: 0.4,
