@@ -41,25 +41,25 @@ const report = {
 }
 
 // #### Map
-function initMap(position) {
-    const latLong = [position.latitude,position.longitude];
-    report.map = L.map('map').setView(latLong, 18);
-    // Add OpenStreetMap tile layer
-    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        maxZoom: 19,
-        attribution: '&copy; Apolo Mc Melo'
-    }).addTo(report.map);
+function initReportMap() {
+    const coordinates = localStorage.getItem("JourneyCoordinates")
 
-    L.marker(latLong).addTo(report.map);
-}
+    if(coordinates) {
+        const parsedCoordinates = JSON.parse(coordinates)
+        const latLong = parsedCoordinates[0];
 
-function updatePositionOnMap(position) {
-    const latLong = [position.latitude,position.longitude];
+        report.map = L.map('report-map').setView(latLong, 15);
+        // Add OpenStreetMap tile layer
+        L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+            attribution: '&copy; Apolo Mc Melo'
+        }).addTo(report.map);
 
-    report.journeyCoordinates.push(latLong);
-    report.map.setView(latLong, 18);
+        L.polyline(parsedCoordinates, { color: 'blue' }).addTo(report.map);
 
-    L.polyline(report.journeyCoordinates, { color: 'blue' }).addTo(report.map);
+        L.marker(latLong).addTo(report.map);
+        L.marker(parsedCoordinates[parsedCoordinates.length - 1]).addTo(report.map);
+    }
 }
 
 function createSpeedDataset(data) {
@@ -73,8 +73,8 @@ function createSpeedDataset(data) {
         // backgroundColor: 'rgba(0, 255, 255, 0.2)', // Semi-transparent fill
         borderWidth: 2,
         fill: false,
-        pointRadius: 0, // Hide the dots in the chart
-        tension: 0.2, // Smooth curve
+        pointRadius: 0,
+        tension: 0.4,
     }
 }
 
@@ -87,11 +87,11 @@ function createMetricDataset(data, colour) {
         })),
         borderColor: colour,
         // backgroundColor: colour,
-        borderDash: [6, 3], // Dotted line
+        // borderDash: [3, 3], // Dotted line
         borderWidth: 2,
         fill: false,
-        pointRadius: 0, // Hide the dots in the chart
-        tension: 0.2, // Smooth curve
+        pointRadius: 0,
+        tension: 0.4,
     }
 }
 // #### Report
@@ -119,6 +119,7 @@ function initReportChart(parsedSpeedHistory, parsedInterestHistory, parsedExcite
                 scales: {
                     x: {
                         type: 'category', // Use formatted timestamps for X-axis
+                        beginAtZero: true,
                         border: {
                             display: false
                         }
@@ -134,7 +135,12 @@ function initReportChart(parsedSpeedHistory, parsedInterestHistory, parsedExcite
                 plugins: {
                     legend: {
                         display: true, // Display the legend
-                        position: 'bottom'
+                        position: 'bottom',
+                        labels: {
+                            boxWidth: 12,
+                            useBorderRadius: true,
+                            borderRadius: 6
+                        }
                     }
                 }
             }
@@ -177,6 +183,7 @@ function generateReport() {
         updateInfo(relaxationArray, report.dom.metrics.relaxation, "")
         updateInfo(stressArray, report.dom.metrics.stress, "")
 
+        initReportMap()
         initReportChart(parsedSpeedHistory, parsedInterestHistory, parsedExcitementHistory, parsedAttentionHistory, parsedEngagementHistory, parsedRelaxationHistory, parsedStressHistory)
     }
 }

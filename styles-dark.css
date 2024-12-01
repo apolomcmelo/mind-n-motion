@@ -200,6 +200,9 @@ canvas {
     margin: 24px 0 40px;
     display: grid;
 }
+.report-map-container {
+    height: 190px;
+}
 .map-container::before, .report-map-container::before {
     content: ""; /* Required for pseudo-elements */
     position: absolute;
