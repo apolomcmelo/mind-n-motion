@@ -70,11 +70,11 @@ function createSpeedDataset(data) {
             y: dataPoint.speed
         })),
         borderColor: createChartVerticalGradient(report.chartElement),
-        backgroundColor: 'rgba(0, 255, 255, 0.2)', // Semi-transparent fill
+        // backgroundColor: 'rgba(0, 255, 255, 0.2)', // Semi-transparent fill
         borderWidth: 2,
         fill: false,
         pointRadius: 0, // Hide the dots in the chart
-        tension: 0.4, // Smooth curve
+        tension: 0.2, // Smooth curve
     }
 }
 
@@ -86,6 +86,7 @@ function createMetricDataset(data, colour) {
             y: dataPoint.score
         })),
         borderColor: colour,
+        // backgroundColor: colour,
         borderDash: [6, 3], // Dotted line
         borderWidth: 2,
         fill: false,
@@ -101,12 +102,12 @@ function initReportChart(parsedSpeedHistory, parsedInterestHistory, parsedExcite
         let datasets = []
 
         datasets.push(createSpeedDataset(parsedSpeedHistory))
-        datasets.push(createMetricDataset(parsedInterestHistory, 'rgba(0, 0, 255, 0.5)'))
-        datasets.push(createMetricDataset(parsedExcitementHistory, 'rgba(0, 128, 0, 0.5)'))
-        datasets.push(createMetricDataset(parsedAttentionHistory, 'rgba(132, 128, 0, 0.5)'))
-        datasets.push(createMetricDataset(parsedEngagementHistory, 'rgba(0, 128, 88, 0.5)'))
-        datasets.push(createMetricDataset(parsedRelaxationHistory, 'rgba(156, 46, 0, 0.5)'))
-        datasets.push(createMetricDataset(parsedStressHistory, 'rgba(200, 45, 182, 0.5)'))
+        datasets.push(createMetricDataset(parsedInterestHistory, 'rgba(55, 124, 200, 0.5)'))
+        datasets.push(createMetricDataset(parsedExcitementHistory, 'rgba(210, 151, 20, 0.5)'))
+        datasets.push(createMetricDataset(parsedAttentionHistory, 'rgba(121, 126, 219, 0.5)'))
+        datasets.push(createMetricDataset(parsedEngagementHistory, 'rgba(25, 168, 83, 0.5)'))
+        datasets.push(createMetricDataset(parsedRelaxationHistory, 'rgba(83, 199, 201, 0.5)'))
+        datasets.push(createMetricDataset(parsedStressHistory, 'rgba(223, 65, 52, 0.5)'))
 
         report.chart = new Chart(report.chartElement, {
             type: 'line',
