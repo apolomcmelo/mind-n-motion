@@ -32,6 +32,8 @@ export class App {
 
         this.registerButtonListeners()
         this.loadRecordingPage();  // This is the initial page
+
+        this.startSimulation()
     }
 
     private registerButtonListeners() {
@@ -77,6 +79,8 @@ export class App {
         this.startStopButtonIcon.classList.remove("active");
         this.settingsButton.classList.remove("active");
 
+        this.reportService.generateReport()
+
         this.showPage(Pages.REPORT)
     }
 
@@ -96,6 +100,14 @@ export class App {
         navigator.serviceWorker.register('./service-worker.js', {
             scope: './'
         });
+    }
+
+    private startSimulation() {
+        setInterval(() => {
+            let now = Date.now()
+            this.recordingService.simulateMetricsChange(now);
+            this.recordingService.simulateSpeedChange(now);
+        }, 2000);
     }
 
 }

@@ -122,8 +122,8 @@
             <div class="column left">
               <div class="report">
                 <span class="title">Speed</span>
-                <span id="maxSpeed" class="info">Max: -</span>
-                <span id="avgSpeed" class="info">Avg: -</span>
+                <span id="max-speed" class="info">Max: -</span>
+                <span id="avg-speed" class="info">Avg: -</span>
               </div>
             </div>
 
@@ -143,48 +143,48 @@
             <div class="column left">
               <div class="report">
                 <span class="title">Interest</span>
-                <span id="maxInterest" class="info">Max: -</span>
-                <span id="avgInterest" class="info">Avg: -</span>
+                <span id="max-interest" class="info">Max: -</span>
+                <span id="avg-interest" class="info">Avg: -</span>
               </div>
             </div>
 
             <div class="column">
               <div class="report">
                 <span class="title">Excitement</span>
-                <span id="maxExcitement" class="info">Max: -</span>
-                <span id="avgExcitement" class="info">Avg: -</span>
+                <span id="max-excitement" class="info">Max: -</span>
+                <span id="avg-excitement" class="info">Avg: -</span>
               </div>
             </div>
 
             <div class="column right">
               <div class="report">
                 <span class="title">Attention</span>
-                <span id="maxAttention" class="info">Max: -</span>
-                <span id="avgAttention" class="info">Avg: -</span>
+                <span id="max-attention" class="info">Max: -</span>
+                <span id="avg-attention" class="info">Avg: -</span>
               </div>
             </div>
 
             <div class="column left">
               <div class="report">
                 <span class="title">Engagement</span>
-                <span id="maxEngagement" class="info">Max: -</span>
-                <span id="avgEngagement" class="info">Avg: -</span>
+                <span id="max-engagement" class="info">Max: -</span>
+                <span id="avg-engagement" class="info">Avg: -</span>
               </div>
             </div>
 
             <div class="column">
               <div class="report">
                 <span class="title">Relaxation</span>
-                <span id="maxRelaxation" class="info">Max: -</span>
-                <span id="avgRelaxation" class="info">Avg: -</span>
+                <span id="max-relaxation" class="info">Max: -</span>
+                <span id="avg-relaxation" class="info">Avg: -</span>
               </div>
             </div>
 
             <div class="column right">
               <div class="report">
                 <span class="title">Stress</span>
-                <span id="maxStress" class="info">Max: -</span>
-                <span id="avgStress" class="info">Avg: -</span>
+                <span id="max-stress" class="info">Max: -</span>
+                <span id="avg-stress" class="info">Avg: -</span>
               </div>
             </div>
           </div>
@@ -221,10 +221,11 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="utils.js"></script>
-    <script src="index.js"></script>
-    <script src="recording-page.js"></script>
-    <script src="report-page.js"></script>
+    <script type="module">
+      import {App} from "../src/app";
+
+      window.onload = () => new App()
+    </script>
 
   </body>
 </html>

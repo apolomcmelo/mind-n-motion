@@ -2,21 +2,20 @@ import * as L from "leaflet";
 import {DataPoint} from "./models/data-point";
 import {Utils} from "./utils";
 import {LatLng} from "leaflet";
-import {Chart} from "chart.js";
+import Chart from 'chart.js/auto';
 import {MetricElement} from "./models/metric-element";
 import {MetricRecord} from "./models/metric-record";
-import {Metrics} from "./enums/metrics";
 
 export class RecordingService {
-    metrics: MetricElement[]
+    metrics: MetricElement[] = []
     speedometer: HTMLElement
     map: L.Map
     watchId?: number
     chart: any
     chartElement: CanvasRenderingContext2D
-    speedHistory: DataPoint[]
-    metricsHistory: MetricRecord[]
-    journeyCoordinates: LatLng[]
+    speedHistory: DataPoint[] = []
+    metricsHistory: MetricRecord[] = []
+    journeyCoordinates: LatLng[] = []
 
     constructor() {
         this.speedometer = document.getElementById("speedometer")
@@ -33,8 +32,10 @@ export class RecordingService {
         // Record the Position and Speed
         this.watchId = navigator.geolocation.watchPosition(
             (position) => {
+                const currentSpeedInKmPerHour = Math.round(position.coords.speed * 3.6)
+
                 this.updatePositionOnMap(position.coords)
-                this.updateSpeed(position)
+                this.updateSpeed(new DataPoint(position.timestamp, currentSpeedInKmPerHour))
             },
             (error) => console.error("Error watching the position", error),
             { enableHighAccuracy: true }
@@ -51,7 +52,7 @@ export class RecordingService {
         localStorage.setItem("speedHistory", JSON.stringify(this.speedHistory))
         localStorage.setItem("journeyCoordinates", JSON.stringify(this.journeyCoordinates))
 
-        Object.values(Metrics).forEach(metric => {
+        Utils.allMetrics().forEach(metric => {
             const lowerCaseMetric = metric.toString().toLowerCase()
             const singleMetricHistory = this.metricsHistory.filter(m => m.name === lowerCaseMetric)
             localStorage.setItem(`${lowerCaseMetric}History`, JSON.stringify(singleMetricHistory))
@@ -71,25 +72,21 @@ export class RecordingService {
 
     // #### Metrics
     private initMetrics() {
-        Object.values(Metrics).forEach(metric => {
-            const metricElement = new MetricElement(metric.toString());
+        Utils.allMetrics().forEach(metric => {
+            const metricElement = new MetricElement(metric.toString().toLowerCase());
             metricElement.setScore(0)
 
             this.metrics.push(metricElement)
         })
     }
-    private updateMetric(metricName: string, metricDataPoint: DataPoint) {
-        const metricRecord = new MetricRecord(metricName.toLowerCase(), metricDataPoint)
-
+    private updateMetric(metricRecord: MetricRecord) {
         this.metricsHistory.push(metricRecord)
 
         this.metrics.find(m => m.name == metricRecord.name).setScore(metricRecord.data.value)
     }
 
     // #### Speed
-    private updateSpeed(position: GeolocationPosition) {
-        const speedRecord = new DataPoint(position.timestamp, Math.round(position.coords.speed * 3.6))
-
+    private updateSpeed(speedRecord: DataPoint) {
         this.speedHistory.push(speedRecord);
 
         this.speedometer.textContent = `${speedRecord.value}`
@@ -169,5 +166,24 @@ export class RecordingService {
 
         this.journeyCoordinates.push(latLng);
         this.map.setView(latLng, 18);
+    }
+
+    // #### Simulation Functions
+    public simulateMetricsChange(timestamp: number) {
+        this.metrics.forEach((metric) => {
+            const metricRecord = new MetricRecord(metric.name.toLowerCase(), new DataPoint(timestamp, Math.round(Math.random() * 80) + 20))// Random metric between 20 and 100
+
+            this.metricsHistory.push(metricRecord)
+
+            this.updateMetric(metricRecord)
+        })
+    }
+
+    public simulateSpeedChange(timestamp: number) {
+        const speedRecord = new DataPoint(timestamp, Math.floor(Math.random() * 120) + 60) // Random speed between 60 and 120
+
+        this.speedHistory.push(speedRecord);
+
+        this.updateSpeed(speedRecord)
     }
 }

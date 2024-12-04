@@ -1,5 +1,7 @@
 import {ReportInfo} from "./models/report-info";
 import {DataPoint} from "./models/data-point";
+import {Chart} from "chart.js";
+import {Metrics} from "./enums/metrics";
 
 class UtilsService
 {
@@ -40,7 +42,7 @@ class UtilsService
         return gradient;
     }
 
-    public updateChartWith(chart, chartElement: CanvasRenderingContext2D, dataPoint: DataPoint) {
+    public updateChartWith(chart: Chart, chartElement: CanvasRenderingContext2D, dataPoint: DataPoint) {
         chart.data.labels.push(dataPoint.timestamp);
         chart.data.datasets[0].data.push(dataPoint.value);
 
@@ -52,6 +54,12 @@ class UtilsService
     public updateInfo(data: number[], reportInfo: ReportInfo, infoSuffix: string) {
         reportInfo.max.innerText = `Max: ${this.getMax(data)}${infoSuffix}`
         reportInfo.avg.innerText = `Avg: ${this.getAverage(data)}${infoSuffix}`
+    }
+
+    public allMetrics() {
+        return Object
+            .getOwnPropertyNames(Metrics)
+            .filter(prop => isNaN(parseInt(prop)));
     }
 }
 
