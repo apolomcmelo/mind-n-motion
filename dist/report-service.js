@@ -46,9 +46,9 @@ export class ReportService {
   }
   createSpeedDataset(data) {
     return {
-      label: "Speed",
+      label: "speed",
       data: data.map((dataPoint) => ({
-        x: Utils.timestampToDate(parseInt(dataPoint.timestamp)),
+        x: dataPoint.timestamp,
         y: dataPoint.value
       })),
       borderColor: Utils.createChartVerticalGradient(this.chartElement),
@@ -61,9 +61,9 @@ export class ReportService {
   createMetricDataset(data, colour) {
     return {
       label: data[0].name,
-      data: data.map((metricDataPoint) => ({
-        x: Utils.timestampToDate(parseInt(metricDataPoint.data.timestamp)),
-        y: metricDataPoint.data.value
+      data: data.map((dataPoint) => ({
+        x: dataPoint.data.timestamp,
+        y: dataPoint.data.value
       })),
       borderColor: colour,
       borderWidth: 1,

@@ -127,7 +127,6 @@ export class RecordingService {
   simulateMetricsChange(timestamp) {
     this.metrics.forEach((metric) => {
       const metricRecord = new MetricRecord(metric.name.toLowerCase(), new DataPoint(timestamp, Math.round(Math.random() * 80) + 20));
-      this.metricsHistory.push(metricRecord);
       this.updateMetric(metricRecord);
     });
   }
