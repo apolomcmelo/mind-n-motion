@@ -72,7 +72,7 @@ export class ReportService {
         return {
             label: 'speed',
             data: data.map(dataPoint => ({
-                x: dataPoint.timestamp,
+                x: Utils.timestampToDate(dataPoint.timestamp),
                 y: dataPoint.value
             })),
             borderColor: Utils.createChartVerticalGradient(this.chartElement),
@@ -87,7 +87,7 @@ export class ReportService {
         return {
             label: data[0].name,
             data: data.map(dataPoint => ({
-                x: dataPoint.data.timestamp,
+                x: Utils.timestampToDate(dataPoint.data.timestamp),
                 y: dataPoint.data.value
             })),
             borderColor: colour,

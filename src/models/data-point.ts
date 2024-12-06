@@ -1,11 +1,11 @@
 import {Utils} from "../utils";
 
 export class DataPoint {
-    timestamp: string
+    timestamp: number
     value: number
 
     constructor(timestamp: number, value: number) {
-        this.timestamp = Utils.timestampToDate(timestamp)
+        this.timestamp = timestamp
         this.value = value
     }
 
