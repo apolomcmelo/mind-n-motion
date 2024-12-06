@@ -15,6 +15,12 @@ jobs:
       - name: Checkout the code
         uses: actions/checkout@v3
 
+      - name: Replace Emotiv Client Id
+        run: sed -i -e 's|client-id|${{ secrets.EMOTIV_CLIENT_ID }}|' src/configuration/properties.ts
+
+      - name: Replace Emotiv Client Secret
+        run: sed -i -e 's|client-secret|${{ secrets.EMOTIV_CLIENT_SECRET }}|' src/configuration/properties.ts
+
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
