@@ -196,9 +196,11 @@ canvas {
 /* Map Section */
 .map-container, .report-map-container {
     position: relative;
-    height: 100%;
     margin: 24px 0 40px;
     display: grid;
+}
+.map-container {
+    height: 380px;
 }
 .report-map-container {
     height: 190px;

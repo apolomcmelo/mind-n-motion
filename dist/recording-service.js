@@ -43,14 +43,26 @@ export class RecordingService {
     if (this.emotivConnected) {
       this.emotivService.readData([DataStream.METRICS], (dataStream) => this.handleMetricsSubscription(dataStream));
       this.watchId = navigator.geolocation.watchPosition((position) => {
-        const currentSpeedInKmPerHour = Math.round(position.coords.speed * 3.6);
-        this.updatePositionOnMap(position.coords);
-        this.updateSpeed(new DataPoint(position.timestamp, currentSpeedInKmPerHour));
+        const currentLatLngCoordinate = L.latLng(position.coords.latitude, position.coords.longitude);
+        this.updatePositionOnMap(currentLatLngCoordinate);
+        this.updateSpeed(this.getSpeedRecord(currentLatLngCoordinate));
       }, (error) => console.error("Error watching the position", error), {enableHighAccuracy: true});
     } else {
       window.alert("EMOTIV not connected");
       this.connectEmotiv();
     }
+  }
+  getSpeedRecord(latLngCoordinates) {
+    const now = new Date();
+    if (this.speedHistory.length > 0 && this.journeyCoordinates.length > 0) {
+      let previousTime = this.speedHistory[this.speedHistory.length - 1].timestamp;
+      let previousLatLng = this.journeyCoordinates[this.journeyCoordinates.length - 1];
+      const elapsedTime = (now.getTime() - previousTime) / 1e3;
+      const distance = previousLatLng.distanceTo(latLngCoordinates);
+      const currentSpeedInKmPerHour = distance / elapsedTime * 3.6;
+      return new DataPoint(now.getTime(), currentSpeedInKmPerHour);
+    }
+    return new DataPoint(now.getTime(), 0);
   }
   stopRecording() {
     navigator.geolocation.clearWatch(this.watchId);
@@ -101,7 +113,7 @@ export class RecordingService {
     this.chart = new Chart(this.chartElement, {
       type: "line",
       data: {
-        labels: this.speedHistory.map((data) => data.timestamp),
+        labels: this.speedHistory.map((data) => Utils.timestampToDate(data.timestamp)),
         datasets: [{
           label: "Speed (km/h)",
           data: this.speedHistory.map((data) => data.value),
@@ -148,17 +160,16 @@ export class RecordingService {
   }
   initMap(coordinates) {
     const latLng = new LatLng(coordinates.latitude, coordinates.longitude);
-    this.map = L.map("map").setView(latLng, 18);
+    this.map = L.map("map").setView(latLng, 19).panTo(latLng);
     L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
       maxZoom: 19,
       attribution: "&copy; Apolo Mc Melo"
     }).addTo(this.map);
     L.marker(latLng).addTo(this.map);
   }
-  updatePositionOnMap(coordinates) {
-    const latLng = new LatLng(coordinates.latitude, coordinates.longitude);
-    this.journeyCoordinates.push(latLng);
-    this.map.setView(latLng, 18);
+  updatePositionOnMap(latLngCoordinates) {
+    this.journeyCoordinates.push(latLngCoordinates);
+    this.map.setView(latLngCoordinates, 18);
   }
   simulateMetricsChange(timestamp) {
     this.metrics.forEach((metric) => {
