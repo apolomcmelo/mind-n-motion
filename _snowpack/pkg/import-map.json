@@ -1,0 +1,6 @@
+{
+  "imports": {
+    "chart.js/auto": "./chartjs/auto.js",
+    "leaflet": "./leaflet.js"
+  }
+}
