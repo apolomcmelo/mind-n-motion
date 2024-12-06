@@ -3,8 +3,8 @@ export const properties = {
     url: "wss://localhost:6868",
     credentials: {
       license: "",
-      clientId: "client-id",
-      clientSecret: "client-secret",
+      clientId: "YJ1sSA8PJHSGWpQrpBPebFwqnq8ZCBNpd4IZAZMa",
+      clientSecret: "KEmJuUPx25c9ELrhDi3QKtbfm5IMfLxujXYXnvCyX3pzSDfnpoA8bPTWwYePgDVJ3PBoEyihB49WwWq50ur4PGvtRehQ9qSobrVjBcivvyBL1LWYQJNWFGlJvgrUuSwI",
       debit: 1
     }
   }
