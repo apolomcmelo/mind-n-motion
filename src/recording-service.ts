@@ -1,12 +1,18 @@
 import * as L from "leaflet";
+import {LatLng} from "leaflet";
 import {DataPoint} from "./models/data-point";
 import {Utils} from "./utils";
-import {LatLng} from "leaflet";
 import Chart from 'chart.js/auto';
 import {MetricElement} from "./models/metric-element";
 import {MetricRecord} from "./models/metric-record";
+import {properties} from "./configuration/properties";
+import {DataStream, EmotivService} from "emotiv-ts";
 
 export class RecordingService {
+    emotivService: EmotivService
+    emotivConnected: boolean = false
+    metricsIndexMap: Map<string, number>
+
     metrics: MetricElement[] = []
     speedometer: HTMLElement
     map: L.Map
@@ -18,30 +24,62 @@ export class RecordingService {
     journeyCoordinates: LatLng[] = []
 
     constructor() {
+        this.metricsIndexMap = new Map()
+
+        this.metricsIndexMap.set("attention", 1)
+        this.metricsIndexMap.set("engagement", 3)
+        this.metricsIndexMap.set("excitement", 5)
+        this.metricsIndexMap.set("stress", 8)
+        this.metricsIndexMap.set("relaxation", 10)
+        this.metricsIndexMap.set("interest", 12)
+
         this.speedometer = document.getElementById("speedometer")
         this.chartElement = (document.getElementById('speedChart') as HTMLCanvasElement).getContext('2d')
 
         this.initMetrics()
         this.initChart()
         this.getCurrentLocation()
+
+        this.connectEmotiv()
+    }
+
+    private connectEmotiv() {
+        console.log("Connecting to Emotiv...")
+
+        this.emotivService = new EmotivService(properties.emotiv.url, properties.emotiv.credentials);
+
+        this.emotivService.connect()
+            .then(() => {
+                this.emotivConnected = true;
+            })
+            .catch((error) => {
+                console.error(error)
+                window.alert(error)
+            })
     }
 
     public startRecording() {
         this.resetData();
 
-        // Record the Position and Speed
-        this.watchId = navigator.geolocation.watchPosition(
-            (position) => {
-                const currentSpeedInKmPerHour = Math.round(position.coords.speed * 3.6)
-
-                this.updatePositionOnMap(position.coords)
-                this.updateSpeed(new DataPoint(position.timestamp, currentSpeedInKmPerHour))
-            },
-            (error) => console.error("Error watching the position", error),
-            { enableHighAccuracy: true }
-        );
-
         // Record Metrics by subscribing to Emotiv
+        if(this.emotivConnected) {
+            this.emotivService.readData([DataStream.METRICS], (dataStream) => this.handleMetricsSubscription(dataStream))
+
+            // Record the Position and Speed
+            this.watchId = navigator.geolocation.watchPosition(
+                (position) => {
+                    const currentSpeedInKmPerHour = Math.round(position.coords.speed * 3.6)
+
+                    this.updatePositionOnMap(position.coords)
+                    this.updateSpeed(new DataPoint(position.timestamp, currentSpeedInKmPerHour))
+                },
+                (error) => console.error("Error watching the position", error),
+                { enableHighAccuracy: true }
+            );
+        } else {
+            window.alert("EMOTIV not connected")
+            this.connectEmotiv()
+        }
     }
 
     public stopRecording() {
@@ -61,6 +99,8 @@ export class RecordingService {
         console.debug("Speed History", this.speedHistory)
         console.debug("Metrics History", this.metricsHistory)
         console.debug("Journey Coordinates", this.journeyCoordinates)
+
+        // Unsubscribe Emotiv data stream
     }
 
     private resetData() {
@@ -83,6 +123,24 @@ export class RecordingService {
         this.metricsHistory.push(metricRecord)
 
         this.metrics.find(m => m.name == metricRecord.name).setScore(metricRecord.data.value)
+    }
+    private handleMetricsSubscription(dataStream: any) {
+        let metricsScores = dataStream[DataStream.METRICS];
+
+        if (metricsScores) {
+            this.metrics.forEach((metric) => {
+                const metricRecord = new MetricRecord(
+                    metric.name.toLowerCase(),
+                    new DataPoint(
+                        dataStream['time'] * 1000, // The Emotiv stream returns the timestamp in seconds, so converting here to ms
+                        Math.round(metricsScores[this.metricsIndexMap.get(metric.name)] * 100)
+                    )
+                )
+
+                this.updateMetric(metricRecord)
+            })
+
+        }
     }
 
     // #### Speed
