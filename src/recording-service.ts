@@ -173,8 +173,6 @@ export class RecordingService {
         this.metrics.forEach((metric) => {
             const metricRecord = new MetricRecord(metric.name.toLowerCase(), new DataPoint(timestamp, Math.round(Math.random() * 80) + 20))// Random metric between 20 and 100
 
-            this.metricsHistory.push(metricRecord)
-
             this.updateMetric(metricRecord)
         })
     }
