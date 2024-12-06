@@ -33,7 +33,7 @@ export class App {
         this.registerButtonListeners()
         this.loadRecordingPage();  // This is the initial page
 
-        this.startSimulation()
+        // this.startSimulation()
     }
 
     private registerButtonListeners() {
