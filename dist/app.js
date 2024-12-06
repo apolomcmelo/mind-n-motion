@@ -13,7 +13,6 @@ export class App {
     this.reportService = new ReportService();
     this.registerButtonListeners();
     this.loadRecordingPage();
-    this.startSimulation();
   }
   registerButtonListeners() {
     this.settingsButton.addEventListener("click", (event) => this.loadSettingsPage());
