@@ -1,29 +1,56 @@
 import * as L from "../_snowpack/pkg/leaflet.js";
+import {LatLng} from "../_snowpack/pkg/leaflet.js";
 import {DataPoint} from "./models/data-point.js";
 import {Utils} from "./utils.js";
-import {LatLng} from "../_snowpack/pkg/leaflet.js";
 import Chart from "../_snowpack/pkg/chartjs/auto.js";
 import {MetricElement} from "./models/metric-element.js";
 import {MetricRecord} from "./models/metric-record.js";
+import {properties} from "./configuration/properties.js";
+import {DataStream, EmotivService} from "../_snowpack/pkg/emotiv-ts.js";
 export class RecordingService {
   constructor() {
+    this.emotivConnected = false;
     this.metrics = [];
     this.speedHistory = [];
     this.metricsHistory = [];
     this.journeyCoordinates = [];
+    this.metricsIndexMap = new Map();
+    this.metricsIndexMap.set("attention", 1);
+    this.metricsIndexMap.set("engagement", 3);
+    this.metricsIndexMap.set("excitement", 5);
+    this.metricsIndexMap.set("stress", 8);
+    this.metricsIndexMap.set("relaxation", 10);
+    this.metricsIndexMap.set("interest", 12);
     this.speedometer = document.getElementById("speedometer");
     this.chartElement = document.getElementById("speedChart").getContext("2d");
     this.initMetrics();
     this.initChart();
     this.getCurrentLocation();
+    this.connectEmotiv();
+  }
+  connectEmotiv() {
+    console.log("Connecting to Emotiv...");
+    this.emotivService = new EmotivService(properties.emotiv.url, properties.emotiv.credentials);
+    this.emotivService.connect().then(() => {
+      this.emotivConnected = true;
+    }).catch((error) => {
+      console.error(error);
+      window.alert(error);
+    });
   }
   startRecording() {
     this.resetData();
-    this.watchId = navigator.geolocation.watchPosition((position) => {
-      const currentSpeedInKmPerHour = Math.round(position.coords.speed * 3.6);
-      this.updatePositionOnMap(position.coords);
-      this.updateSpeed(new DataPoint(position.timestamp, currentSpeedInKmPerHour));
-    }, (error) => console.error("Error watching the position", error), {enableHighAccuracy: true});
+    if (this.emotivConnected) {
+      this.emotivService.readData([DataStream.METRICS], (dataStream) => this.handleMetricsSubscription(dataStream));
+      this.watchId = navigator.geolocation.watchPosition((position) => {
+        const currentSpeedInKmPerHour = Math.round(position.coords.speed * 3.6);
+        this.updatePositionOnMap(position.coords);
+        this.updateSpeed(new DataPoint(position.timestamp, currentSpeedInKmPerHour));
+      }, (error) => console.error("Error watching the position", error), {enableHighAccuracy: true});
+    } else {
+      window.alert("EMOTIV not connected");
+      this.connectEmotiv();
+    }
   }
   stopRecording() {
     navigator.geolocation.clearWatch(this.watchId);
@@ -55,6 +82,15 @@ export class RecordingService {
   updateMetric(metricRecord) {
     this.metricsHistory.push(metricRecord);
     this.metrics.find((m) => m.name == metricRecord.name).setScore(metricRecord.data.value);
+  }
+  handleMetricsSubscription(dataStream) {
+    let metricsScores = dataStream[DataStream.METRICS];
+    if (metricsScores) {
+      this.metrics.forEach((metric) => {
+        const metricRecord = new MetricRecord(metric.name.toLowerCase(), new DataPoint(dataStream["time"] * 1e3, Math.round(metricsScores[this.metricsIndexMap.get(metric.name)] * 100)));
+        this.updateMetric(metricRecord);
+      });
+    }
   }
   updateSpeed(speedRecord) {
     this.speedHistory.push(speedRecord);
