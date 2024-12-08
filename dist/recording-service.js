@@ -43,9 +43,10 @@ export class RecordingService {
     if (this.emotivConnected) {
       this.emotivService.readData([DataStream.METRICS], (dataStream) => this.handleMetricsSubscription(dataStream));
       this.watchId = navigator.geolocation.watchPosition((position) => {
+        console.debug("Coordinates", position.coords);
         const currentLatLngCoordinate = L.latLng(position.coords.latitude, position.coords.longitude);
-        this.updatePositionOnMap(currentLatLngCoordinate);
         this.updateSpeed(this.getSpeedRecord(currentLatLngCoordinate));
+        this.updatePositionOnMap(currentLatLngCoordinate);
       }, (error) => console.error("Error watching the position", error), {enableHighAccuracy: true});
     } else {
       window.alert("EMOTIV not connected");
@@ -59,7 +60,10 @@ export class RecordingService {
       let previousLatLng = this.journeyCoordinates[this.journeyCoordinates.length - 1];
       const elapsedTime = (now.getTime() - previousTime) / 1e3;
       const distance = previousLatLng.distanceTo(latLngCoordinates);
+      console.debug("Distance", distance);
+      console.debug("Elapsed time", elapsedTime);
       const currentSpeedInKmPerHour = distance / elapsedTime * 3.6;
+      console.debug("Speed", currentSpeedInKmPerHour);
       return new DataPoint(now.getTime(), currentSpeedInKmPerHour);
     }
     return new DataPoint(now.getTime(), 0);
