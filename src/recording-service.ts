@@ -68,13 +68,14 @@ export class RecordingService {
             // Record the Position and Speed
             this.watchId = navigator.geolocation.watchPosition(
                 (position) => {
+                    console.debug("Coordinates", position.coords)
                     // const currentSpeedInKmPerHour = Math.round(position.coords.speed * 3.6)
                     const currentLatLngCoordinate = L.latLng(
                         position.coords.latitude,
                         position.coords.longitude
                     )
-                    this.updatePositionOnMap(currentLatLngCoordinate)
                     this.updateSpeed(this.getSpeedRecord(currentLatLngCoordinate))
+                    this.updatePositionOnMap(currentLatLngCoordinate)
                 },
                 (error) => console.error("Error watching the position", error),
                 { enableHighAccuracy: true }
@@ -94,9 +95,11 @@ export class RecordingService {
 
             const elapsedTime = (now.getTime() - previousTime) / 1000; // In seconds
             const distance = previousLatLng.distanceTo(latLngCoordinates);
+            console.debug("Distance", distance)
+            console.debug("Elapsed time", elapsedTime)
 
             const currentSpeedInKmPerHour = (distance / elapsedTime) * 3.6;
-
+            console.debug("Speed", currentSpeedInKmPerHour)
             return new DataPoint(now.getTime(), currentSpeedInKmPerHour);
         }
 
