@@ -62,7 +62,7 @@ export class RecordingService {
       const distance = previousLatLng.distanceTo(latLngCoordinates);
       console.debug("Distance", distance);
       console.debug("Elapsed time", elapsedTime);
-      const currentSpeedInKmPerHour = distance / elapsedTime * 3.6;
+      const currentSpeedInKmPerHour = Math.round(distance / elapsedTime * 3.6);
       console.debug("Speed", currentSpeedInKmPerHour);
       return new DataPoint(now.getTime(), currentSpeedInKmPerHour);
     }
