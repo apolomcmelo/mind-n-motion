@@ -452,7 +452,8 @@ class HeadsetService {
                             resolve(context.headsetId);
                         }
                         else {
-                            console.log('No headset was found. Please, connect the headset with your pc.');
+                            console.log('No Emotiv headset was found. Please, connect one.');
+                            reject('No  Emotiv headset was found. Please, connect one.');
                         }
                     }
                 }

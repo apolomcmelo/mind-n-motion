@@ -40,15 +40,21 @@ export class RecordingService {
     this.logOnScreen("Connecting to Emotiv...");
     this.logOnScreen("Emotiv URL: " + properties.emotiv.url, "debug");
     this.logOnScreen("Emotiv Credentials: " + JSON.stringify(properties.emotiv.credentials), "debug");
-    this.emotivService = new EmotivService(properties.emotiv.url, properties.emotiv.credentials);
-    this.emotivService.connect().then(() => {
-      this.emotivConnected = true;
-      this.logOnScreen("Connected to Emotiv.");
-    }).catch((error) => {
+    try {
+      this.emotivService = new EmotivService(properties.emotiv.url, properties.emotiv.credentials);
+      this.emotivService.connect().then(() => {
+        this.emotivConnected = true;
+        this.logOnScreen("Connected to Emotiv.");
+      }).catch((error) => {
+        console.error(error);
+        this.logOnScreen(error, "error");
+        window.alert(error);
+      });
+    } catch (error) {
       console.error(error);
       this.logOnScreen(error, "error");
       window.alert(error);
-    });
+    }
   }
   startRecording() {
     this.resetData();
