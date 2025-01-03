@@ -297,6 +297,9 @@ class AuthenticationService {
                     let data = JSON.parse(message.data);
                     if (data['id'] == request.id) {
                         console.debug(`Cortex Response for the request ${request.method}:`, data);
+                        if (data['error']) {
+                            throw new Error(data['error']['message']);
+                        }
                         resolve(onSuccess(data));
                     }
                 }
