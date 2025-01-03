@@ -93,12 +93,13 @@ export class RecordingService {
                 (position) => {
                     console.debug("Coordinates", position.coords)
                     this.logOnScreen("Coordinates: " + JSON.stringify(position.coords), "debug")
-                    // const currentSpeedInKmPerHour = Math.round(position.coords.speed * 3.6)
+                    const currentSpeedInKmPerHour = Math.round(position.coords.speed * 3.6) // Convert m/s to km/h
                     const currentLatLngCoordinate = L.latLng(
                         position.coords.latitude,
                         position.coords.longitude
                     )
-                    this.updateSpeed(this.getSpeedRecord(currentLatLngCoordinate))
+
+                    this.updateSpeed(new DataPoint(new Date().getTime(), currentSpeedInKmPerHour))
                     this.updatePositionOnMap(currentLatLngCoordinate)
                 },
                 (error) => {
@@ -113,6 +114,7 @@ export class RecordingService {
         }
     }
 
+    // Deprecating since the mobile version returns the speed in the coordinates
     private getSpeedRecord(latLngCoordinates: LatLng) {
         const now = new Date();
 
