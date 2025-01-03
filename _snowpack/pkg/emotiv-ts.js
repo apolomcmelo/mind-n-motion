@@ -331,12 +331,16 @@ class SessionService {
                     let data = JSON.parse(message.data);
                     if (data['id'] == Requests.CREATE_SESSION) {
                         console.debug("CreateSession response:", data);
+                        if (data['error']) {
+                            throw new Error(data['error']['message']);
+                        }
                         SessionService.sessionId = data['result']['id'];
                         resolve(SessionService.sessionId);
                     }
                 }
                 catch (error) {
                     console.error(error);
+                    reject(error);
                 }
             };
         });
@@ -363,6 +367,7 @@ class SessionService {
                 }
                 catch (error) {
                     console.error(error);
+                    reject(error);
                 }
             };
         });
@@ -439,6 +444,9 @@ class HeadsetService {
                     let data = JSON.parse(message.data);
                     if (data['id'] == Requests.QUERY_HEADSET) {
                         console.debug("QueryHeadsets response:", data);
+                        if (data['error']) {
+                            throw new Error(data['error']['message']);
+                        }
                         if (data['result'].length > 0) {
                             context.headsetId = data['result'][0]['id'];
                             resolve(context.headsetId);
@@ -450,6 +458,7 @@ class HeadsetService {
                 }
                 catch (error) {
                     console.error(error);
+                    reject(error);
                 }
             };
         });
@@ -461,12 +470,17 @@ class HeadsetService {
             context.socket.send(JSON.stringify(controlDeviceRequest));
             context.socket.onmessage = (message) => {
                 try {
-                    if (JSON.parse(message.data)['id'] == Requests.CONTROL_DEVICE) {
+                    let data = JSON.parse(message.data);
+                    if (data['id'] == Requests.CONTROL_DEVICE) {
+                        if (data['error']) {
+                            throw new Error(data['error']['message']);
+                        }
                         resolve(message.data);
                     }
                 }
                 catch (error) {
                     console.error(error);
+                    reject(error);
                 }
             };
         });
@@ -672,6 +686,9 @@ class ProfileService {
                 try {
                     let data = JSON.parse(message.data);
                     if (data['id'] == Requests.SETUP_PROFILE) {
+                        if (data['error']) {
+                            throw new Error(data['error']['message']);
+                        }
                         if (data['result']['action'] == action) {
                             console.log('SETUP PROFILE -------------------------------------');
                             console.log(message.data);
@@ -682,6 +699,7 @@ class ProfileService {
                 }
                 catch (error) {
                     console.error(error);
+                    reject(error);
                 }
             };
         });
@@ -694,12 +712,17 @@ class ProfileService {
             context.socket.send(JSON.stringify(queryProfileRequest));
             context.socket.onmessage = (message) => {
                 try {
-                    if (JSON.parse(message.data)['id'] == Requests.QUERY_PROFILE) {
+                    let data = JSON.parse(message.data);
+                    if (data['id'] == Requests.QUERY_PROFILE) {
+                        if (data['error']) {
+                            throw new Error(data['error']['message']);
+                        }
                         resolve(message.data);
                     }
                 }
                 catch (error) {
                     console.error(error);
+                    resolve(error);
                 }
             };
         });
