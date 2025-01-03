@@ -349,6 +349,27 @@ canvas {
     color: var(--default-colour-bright-blue_highlight);
 }
 
+#log {
+    display: grid;
+}
+#log span {
+    font-size: 16px;
+    overflow-x: scroll;
+    overflow-y: scroll;
+}
+#log span.info {
+    color: var(--default-colour-all-white_84);
+}
+#log span.debug {
+    color: var(--default-colour-bright-blue_20);
+}
+#log span.warn {
+    color: #FDB51BF0;
+}
+#log span.error {
+    color: var(--default-colour-flat-red);
+}
+
 * {
     box-sizing: inherit;
 }

@@ -17,7 +17,7 @@
     },
     "dependencies": {
         "chart.js": "^4.4.7",
-        "emotiv-ts": "^0.0.5",
+        "emotiv-ts": "^0.0.6",
         "leaflet": "^1.9.4"
     }
 }
