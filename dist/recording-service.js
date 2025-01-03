@@ -63,8 +63,9 @@ export class RecordingService {
       this.watchId = navigator.geolocation.watchPosition((position) => {
         console.debug("Coordinates", position.coords);
         this.logOnScreen("Coordinates: " + JSON.stringify(position.coords), "debug");
+        const currentSpeedInKmPerHour = Math.round(position.coords.speed * 3.6);
         const currentLatLngCoordinate = L.latLng(position.coords.latitude, position.coords.longitude);
-        this.updateSpeed(this.getSpeedRecord(currentLatLngCoordinate));
+        this.updateSpeed(new DataPoint(new Date().getTime(), currentSpeedInKmPerHour));
         this.updatePositionOnMap(currentLatLngCoordinate);
       }, (error) => {
         console.error("Error watching the position", error);
