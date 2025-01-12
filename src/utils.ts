@@ -11,6 +11,16 @@ class UtilsService
 
     public static get instance() {  return this._instance || (this._instance = new this()); }
 
+    public log(message: string, level: string = "info") {
+        console[level](message)
+
+        let log = document.createElement("span")
+        log.textContent = message
+        log.classList.add(level)
+
+        let logElement = document.getElementById("log")
+        logElement.appendChild(log)
+    }
     public getAverage(array: number[]) {
         return Math.round(array.reduce((sum, currentValue) => sum + currentValue, 0) / array.length);
     }
