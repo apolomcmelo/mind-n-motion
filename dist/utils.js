@@ -47,5 +47,8 @@ class UtilsService {
   allMetrics() {
     return Object.getOwnPropertyNames(Metrics).filter((prop) => isNaN(parseInt(prop)));
   }
+  performanceMetrics() {
+    return this.allMetrics().filter((metric) => metric != "SPEED");
+  }
 }
 export const Utils = UtilsService.instance;

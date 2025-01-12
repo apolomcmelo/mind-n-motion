@@ -2,9 +2,10 @@ import * as L from "../_snowpack/pkg/leaflet.js";
 import {ReportInfo} from "./models/report-info.js";
 import {Utils} from "./utils.js";
 import Chart from "../_snowpack/pkg/chartjs/auto.js";
+import {Recording} from "./models/recording.js";
 export class ReportService {
   constructor() {
-    this.metrics = [];
+    this.performanceMetrics = [];
     this.metricsChartColours = [
       "rgba(55, 124, 200, 0.5)",
       "rgba(210, 151, 20, 0.5)",
@@ -15,31 +16,32 @@ export class ReportService {
     ];
     this.chartElement = document.getElementById("reportChart").getContext("2d");
     this.speed = new ReportInfo("speed");
-    Utils.allMetrics().map((metric) => this.metrics.push(new ReportInfo(metric.toString().toLowerCase())));
+    Utils.performanceMetrics().map((metric) => this.performanceMetrics.push(new ReportInfo(metric.toString().toLowerCase())));
   }
   generateReport() {
-    const speedHistory = JSON.parse(localStorage.getItem("speedHistory"));
-    const metricsHistory = this.metrics.map((m) => JSON.parse(localStorage.getItem(`${m.name}History`)));
+    const recordingData = JSON.parse(localStorage.getItem("recording"));
+    this.recording = Object.assign(new Recording(), recordingData);
+    const speedHistory = this.recording.recordsOf("speed").map((record) => record.data);
+    const metricsHistory = this.performanceMetrics.map((metric) => this.recording.recordsOf(metric.name));
     Utils.updateInfo(speedHistory.map((s) => s.value), this.speed, "km/h");
     metricsHistory.forEach((metricHistory) => {
-      let reportInfo = this.metrics.find((metricInfo) => metricInfo.name === metricHistory[0].name);
+      let reportInfo = this.performanceMetrics.find((metricInfo) => metricInfo.name === metricHistory[0].name);
       Utils.updateInfo(metricHistory.map((metricRecord) => metricRecord.data.value), reportInfo, "");
     });
     this.initReportMap();
     this.initReportChart(speedHistory, metricsHistory);
   }
   initReportMap() {
-    const coordinates = localStorage.getItem("journeyCoordinates");
+    const coordinates = this.recording.journeyCoordinates;
     if (coordinates) {
-      const parsedCoordinates = JSON.parse(coordinates);
-      const firstCoordinate = parsedCoordinates[0];
-      const lastCoordinate = parsedCoordinates[parsedCoordinates.length - 1];
+      const firstCoordinate = coordinates[0];
+      const lastCoordinate = coordinates[coordinates.length - 1];
       this.map = L.map("report-map").setView(firstCoordinate, 15);
       L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
         maxZoom: 19,
         attribution: "&copy; Apolo Mc Melo"
       }).addTo(this.map);
-      L.polyline(parsedCoordinates, {color: "blue"}).addTo(this.map);
+      L.polyline(coordinates, {color: "blue"}).addTo(this.map);
       L.marker(firstCoordinate).addTo(this.map);
       L.marker(lastCoordinate).addTo(this.map);
     }

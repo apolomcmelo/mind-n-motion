@@ -6,4 +6,5 @@ export var Metrics;
   Metrics2[Metrics2["ENGAGEMENT"] = 3] = "ENGAGEMENT";
   Metrics2[Metrics2["RELAXATION"] = 4] = "RELAXATION";
   Metrics2[Metrics2["STRESS"] = 5] = "STRESS";
+  Metrics2[Metrics2["SPEED"] = 6] = "SPEED";
 })(Metrics || (Metrics = {}));

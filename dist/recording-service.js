@@ -7,13 +7,16 @@ import {MetricElement} from "./models/metric-element.js";
 import {MetricRecord} from "./models/metric-record.js";
 import {properties} from "./configuration/properties.js";
 import {DataStream, EmotivService} from "../_snowpack/pkg/emotiv-ts.js";
+import {Recording} from "./models/recording.js";
+import {Subject} from "./models/subject.js";
+import {Gender} from "./enums/genders.js";
+import {Vehicle} from "./models/vehicle.js";
 export class RecordingService {
   constructor() {
     this.emotivConnected = false;
-    this.metrics = [];
-    this.speedHistory = [];
-    this.metricsHistory = [];
-    this.journeyCoordinates = [];
+    this.performanceMetrics = [];
+    this.subject = new Subject("John Doe", 25, "England", Gender.MALE);
+    this.vehicle = new Vehicle("car", "Mini", "Cooper", 123);
     this.metricsIndexMap = new Map([
       ["attention", 1],
       ["engagement", 3],
@@ -24,7 +27,7 @@ export class RecordingService {
     ]);
     this.speedometer = document.getElementById("speedometer");
     this.chartElement = document.getElementById("speedChart").getContext("2d");
-    this.initMetrics();
+    this.initPerformanceMetrics();
     this.initChart();
     this.getCurrentLocation();
     this.connectEmotiv();
@@ -50,26 +53,26 @@ export class RecordingService {
   startRecording() {
     this.resetData();
     if (this.emotivConnected) {
+      this.recording = new Recording(this.subject, this.vehicle);
       this.emotivService.readData([DataStream.METRICS], (dataStream) => this.handleMetricsSubscription(dataStream));
-      this.watchId = navigator.geolocation.watchPosition((position) => {
-        Utils.log("Coordinates: " + JSON.stringify(position.coords), "debug");
-        const currentSpeedInKmPerHour = Math.round(position.coords.speed * 3.6);
-        const currentLatLngCoordinate = L.latLng(position.coords.latitude, position.coords.longitude);
-        this.updateSpeed(new DataPoint(new Date().getTime(), currentSpeedInKmPerHour));
-        this.updatePositionOnMap(currentLatLngCoordinate);
-      }, (error) => {
-        Utils.log("Error watching the position: " + JSON.stringify(error), "error");
-      }, {enableHighAccuracy: true});
+      this.watchId = navigator.geolocation.watchPosition((position) => this.handleGeolocationSubscription(position), (error) => Utils.log("Error watching the position: " + JSON.stringify(error), "error"), {enableHighAccuracy: true});
     } else {
       window.alert("EMOTIV not connected");
       this.connectEmotiv();
     }
   }
+  handleGeolocationSubscription(position) {
+    Utils.log("Coordinates: " + JSON.stringify(position.coords), "debug");
+    const currentSpeedInKmPerHour = Math.round(position.coords.speed * 3.6);
+    const currentLatLngCoordinate = L.latLng(position.coords.latitude, position.coords.longitude);
+    this.updateSpeed(new DataPoint(new Date().getTime(), currentSpeedInKmPerHour));
+    this.updatePositionOnMap(currentLatLngCoordinate);
+  }
   getSpeedRecord(latLngCoordinates) {
     const now = new Date();
-    if (this.speedHistory.length > 0 && this.journeyCoordinates.length > 0) {
-      let previousTime = this.speedHistory[this.speedHistory.length - 1].timestamp;
-      let previousLatLng = this.journeyCoordinates[this.journeyCoordinates.length - 1];
+    if (this.recording.speedRecords.length > 0 && this.recording.journeyCoordinates.length > 0) {
+      let previousTime = this.recording.speedRecords[this.recording.speedRecords.length - 1].data.timestamp;
+      let previousLatLng = this.recording.journeyCoordinates[this.recording.journeyCoordinates.length - 1];
       const elapsedTime = (now.getTime() - previousTime) / 1e3;
       const distance = previousLatLng.distanceTo(latLngCoordinates);
       Utils.log("Distance: " + distance, "debug");
@@ -81,48 +84,43 @@ export class RecordingService {
     return new DataPoint(now.getTime(), 0);
   }
   stopRecording() {
+    this.recording.finalTimestamp = Date.now();
     navigator.geolocation.clearWatch(this.watchId);
     this.watchId = null;
-    localStorage.setItem("speedHistory", JSON.stringify(this.speedHistory));
-    localStorage.setItem("journeyCoordinates", JSON.stringify(this.journeyCoordinates));
-    Utils.allMetrics().forEach((metric) => {
-      const lowerCaseMetric = metric.toString().toLowerCase();
-      const singleMetricHistory = this.metricsHistory.filter((m) => m.name === lowerCaseMetric);
-      localStorage.setItem(`${lowerCaseMetric}History`, JSON.stringify(singleMetricHistory));
-    });
-    Utils.log("Speed History: " + JSON.stringify(this.speedHistory), "debug");
-    Utils.log("Metrics History: " + JSON.stringify(this.metricsHistory), "debug");
-    Utils.log("Journey Coordinates: " + JSON.stringify(this.journeyCoordinates), "debug");
+    localStorage.setItem("recording", JSON.stringify(this.recording));
+    Utils.log("Speed History: " + JSON.stringify(this.recording.speedRecords), "debug");
+    Utils.log("Metrics History: " + JSON.stringify(this.recording.metricRecords.filter((metric) => metric.name != "speed")), "debug");
+    Utils.log("Journey Coordinates: " + JSON.stringify(this.recording.journeyCoordinates), "debug");
+    this.emotivService.dataStreamService.unsubscribe([DataStream.METRICS], Utils.log);
   }
   resetData() {
     Utils.log("Resetting data...");
     localStorage.clear();
-    this.speedHistory = [];
-    this.metricsHistory = [];
-    this.journeyCoordinates = [];
   }
-  initMetrics() {
-    Utils.allMetrics().forEach((metric) => {
+  initPerformanceMetrics() {
+    Utils.performanceMetrics().forEach((metric) => {
       const metricElement = new MetricElement(metric.toString().toLowerCase());
       metricElement.setScore(0);
-      this.metrics.push(metricElement);
+      this.performanceMetrics.push(metricElement);
     });
   }
   updateMetric(metricRecord) {
-    this.metricsHistory.push(metricRecord);
-    this.metrics.find((m) => m.name == metricRecord.name).setScore(metricRecord.data.value);
+    this.recording.metricRecords.push(metricRecord);
+    this.performanceMetrics.find((m) => m.name == metricRecord.name).setScore(metricRecord.data.value);
   }
   handleMetricsSubscription(dataStream) {
     let metricsScores = dataStream[DataStream.METRICS];
     if (metricsScores) {
-      this.metrics.forEach((metric) => {
+      this.performanceMetrics.forEach((metric) => {
         const metricRecord = new MetricRecord(metric.name.toLowerCase(), new DataPoint(dataStream["time"] * 1e3, Math.round(metricsScores[this.metricsIndexMap.get(metric.name)] * 100)));
         this.updateMetric(metricRecord);
       });
     }
   }
   updateSpeed(speedRecord) {
-    this.speedHistory.push(speedRecord);
+    this.recording.metricRecords.push(new MetricRecord("speed", speedRecord));
+    Utils.log("Speed: " + speedRecord.value, "debug");
+    Utils.log("Metrics Record: " + JSON.stringify(this.recording.metricRecords), "debug");
     this.speedometer.textContent = `${speedRecord.value}`;
     Utils.updateChartWith(this.chart, this.chartElement, speedRecord);
   }
@@ -130,10 +128,10 @@ export class RecordingService {
     this.chart = new Chart(this.chartElement, {
       type: "line",
       data: {
-        labels: this.speedHistory.map((data) => Utils.timestampToDate(data.timestamp)),
+        labels: [],
         datasets: [{
           label: "Speed (km/h)",
-          data: this.speedHistory.map((data) => data.value),
+          data: [],
           borderColor: Utils.createChartHorizontalGradient(this.chartElement),
           borderWidth: 2,
           fill: false,
@@ -168,11 +166,7 @@ export class RecordingService {
   }
   getCurrentLocation() {
     if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition((position) => {
-        this.initMap(position.coords);
-      }, (error) => {
-        Utils.log("Error getting the current location: " + JSON.stringify(error), "error");
-      }, {enableHighAccuracy: true});
+      navigator.geolocation.getCurrentPosition((position) => this.initMap(position.coords), (error) => Utils.log("Error getting the current location: " + JSON.stringify(error), "error"), {enableHighAccuracy: true});
     } else {
       Utils.log("Geolocation is not supported by this browser.", "warn");
     }
@@ -187,18 +181,17 @@ export class RecordingService {
     L.marker(latLng).addTo(this.map);
   }
   updatePositionOnMap(latLngCoordinates) {
-    this.journeyCoordinates.push(latLngCoordinates);
+    this.recording.journeyCoordinates.push(latLngCoordinates);
     this.map.setView(latLngCoordinates, 18);
   }
   simulateMetricsChange(timestamp) {
-    this.metrics.forEach((metric) => {
+    this.performanceMetrics.forEach((metric) => {
       const metricRecord = new MetricRecord(metric.name.toLowerCase(), new DataPoint(timestamp, Math.round(Math.random() * 80) + 20));
       this.updateMetric(metricRecord);
     });
   }
   simulateSpeedChange(timestamp) {
     const speedRecord = new DataPoint(timestamp, Math.floor(Math.random() * 120) + 60);
-    this.speedHistory.push(speedRecord);
     this.updateSpeed(speedRecord);
   }
 }
