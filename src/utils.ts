@@ -69,7 +69,11 @@ class UtilsService
     public allMetrics() {
         return Object
             .getOwnPropertyNames(Metrics)
-            .filter(prop => isNaN(parseInt(prop)));
+            .filter(prop => isNaN(parseInt(prop)))
+    }
+
+    public performanceMetrics() {
+        return this.allMetrics().filter(metric => metric != "SPEED")
     }
 }
 

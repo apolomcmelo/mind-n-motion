@@ -7,23 +7,27 @@ import {MetricElement} from "./models/metric-element";
 import {MetricRecord} from "./models/metric-record";
 import {properties} from "./configuration/properties";
 import {DataStream, EmotivService} from "emotiv-ts";
+import {Recording} from "./models/recording";
+import {Subject} from "./models/subject";
+import {Gender} from "./enums/genders";
+import {Vehicle} from "./models/vehicle";
 
 export class RecordingService {
     emotivService: EmotivService
     emotivConnected: boolean = false
     metricsIndexMap: Map<string, number>
 
-    metrics: MetricElement[] = []
+    performanceMetrics: MetricElement[] = []
     speedometer: HTMLElement
     map: L.Map
     watchId?: number
     chart: any
     chartElement: CanvasRenderingContext2D
-    speedHistory: DataPoint[] = []
-    metricsHistory: MetricRecord[] = []
-    journeyCoordinates: LatLng[] = []
 
-    logElement: HTMLElement
+    recording: Recording
+    // Remove the hardcoded Subject and Vehicle
+    subject = new Subject("John Doe", 25, "England", Gender.MALE)
+    vehicle = new Vehicle("car", "Mini", "Cooper", 123)
 
     constructor() {
         this.metricsIndexMap =
@@ -39,7 +43,7 @@ export class RecordingService {
         this.speedometer = document.getElementById("speedometer")
         this.chartElement = (document.getElementById('speedChart') as HTMLCanvasElement).getContext('2d')
 
-        this.initMetrics()
+        this.initPerformanceMetrics()
         this.initChart()
         this.getCurrentLocation()
 
@@ -71,41 +75,44 @@ export class RecordingService {
     public startRecording() {
         this.resetData();
 
-        // Record Metrics by subscribing to Emotiv
         if(this.emotivConnected) {
+            this.recording = new Recording(this.subject, this.vehicle)
+
+            // Record Metrics by subscribing to Emotiv
             this.emotivService.readData([DataStream.METRICS], (dataStream) => this.handleMetricsSubscription(dataStream))
 
             // Record the Position and Speed
             this.watchId = navigator.geolocation.watchPosition(
-                (position) => {
-                    Utils.log("Coordinates: " + JSON.stringify(position.coords), "debug")
-                    const currentSpeedInKmPerHour = Math.round(position.coords.speed * 3.6) // Convert m/s to km/h
-                    const currentLatLngCoordinate = L.latLng(
-                        position.coords.latitude,
-                        position.coords.longitude
-                    )
-
-                    this.updateSpeed(new DataPoint(new Date().getTime(), currentSpeedInKmPerHour))
-                    this.updatePositionOnMap(currentLatLngCoordinate)
-                },
-                (error) => {
-                    Utils.log("Error watching the position: " + JSON.stringify(error), "error")
-                },
+                (position) => this.handleGeolocationSubscription(position),
+                (error) => Utils.log("Error watching the position: " + JSON.stringify(error), "error"),
                 { enableHighAccuracy: true }
-            );
+            )
         } else {
             window.alert("EMOTIV not connected")
             this.connectEmotiv()
         }
     }
 
-    // Deprecating since the mobile version returns the speed in the coordinates
+    private handleGeolocationSubscription(position: GeolocationPosition) {
+        Utils.log("Coordinates: " + JSON.stringify(position.coords), "debug")
+
+        const currentSpeedInKmPerHour = Math.round(position.coords.speed * 3.6) // Convert m/s to km/h
+        const currentLatLngCoordinate = L.latLng(
+            position.coords.latitude,
+            position.coords.longitude
+        )
+
+        this.updateSpeed(new DataPoint(new Date().getTime(), currentSpeedInKmPerHour))
+        this.updatePositionOnMap(currentLatLngCoordinate)
+    }
+
+// Deprecating since the mobile version returns the speed in the coordinates
     private getSpeedRecord(latLngCoordinates: LatLng) {
         const now = new Date();
 
-        if(this.speedHistory.length > 0 && this.journeyCoordinates.length > 0) {
-            let previousTime = this.speedHistory[this.speedHistory.length-1].timestamp
-            let previousLatLng = this.journeyCoordinates[this.journeyCoordinates.length-1]
+        if(this.recording.speedRecords.length > 0 && this.recording.journeyCoordinates.length > 0) {
+            let previousTime = this.recording.speedRecords[this.recording.speedRecords.length-1].data.timestamp
+            let previousLatLng = this.recording.journeyCoordinates[this.recording.journeyCoordinates.length-1]
 
             const elapsedTime = (now.getTime() - previousTime) / 1000; // In seconds
             const distance = previousLatLng.distanceTo(latLngCoordinates);
@@ -121,53 +128,45 @@ export class RecordingService {
     }
 
     public stopRecording() {
+        this.recording.finalTimestamp = Date.now()
         navigator.geolocation.clearWatch(this.watchId);
 
         this.watchId = null;
 
-        localStorage.setItem("speedHistory", JSON.stringify(this.speedHistory))
-        localStorage.setItem("journeyCoordinates", JSON.stringify(this.journeyCoordinates))
+        localStorage.setItem("recording", JSON.stringify(this.recording))
 
-        Utils.allMetrics().forEach(metric => {
-            const lowerCaseMetric = metric.toString().toLowerCase()
-            const singleMetricHistory = this.metricsHistory.filter(m => m.name === lowerCaseMetric)
-            localStorage.setItem(`${lowerCaseMetric}History`, JSON.stringify(singleMetricHistory))
-        })
-
-        Utils.log("Speed History: " + JSON.stringify(this.speedHistory), "debug")
-        Utils.log("Metrics History: " + JSON.stringify(this.metricsHistory), "debug")
-        Utils.log("Journey Coordinates: " + JSON.stringify(this.journeyCoordinates), "debug")
+        Utils.log("Speed History: " + JSON.stringify(this.recording.speedRecords), "debug")
+        Utils.log("Metrics History: " + JSON.stringify(this.recording.metricRecords.filter(metric => metric.name != "speed")), "debug")
+        Utils.log("Journey Coordinates: " + JSON.stringify(this.recording.journeyCoordinates), "debug")
 
         // Unsubscribe Emotiv data stream
+        this.emotivService.dataStreamService.unsubscribe([DataStream.METRICS], Utils.log)
     }
 
     private resetData() {
         Utils.log("Resetting data...")
         localStorage.clear();
-        this.speedHistory = []
-        this.metricsHistory = []
-        this.journeyCoordinates = []
     }
 
     // #### Metrics
-    private initMetrics() {
-        Utils.allMetrics().forEach(metric => {
+    private initPerformanceMetrics() {
+        Utils.performanceMetrics().forEach(metric => {
             const metricElement = new MetricElement(metric.toString().toLowerCase());
             metricElement.setScore(0)
 
-            this.metrics.push(metricElement)
+            this.performanceMetrics.push(metricElement)
         })
     }
     private updateMetric(metricRecord: MetricRecord) {
-        this.metricsHistory.push(metricRecord)
+        this.recording.metricRecords.push(metricRecord)
 
-        this.metrics.find(m => m.name == metricRecord.name).setScore(metricRecord.data.value)
+        this.performanceMetrics.find(m => m.name == metricRecord.name).setScore(metricRecord.data.value)
     }
     private handleMetricsSubscription(dataStream: any) {
         let metricsScores = dataStream[DataStream.METRICS];
 
         if (metricsScores) {
-            this.metrics.forEach((metric) => {
+            this.performanceMetrics.forEach((metric) => {
                 const metricRecord = new MetricRecord(
                     metric.name.toLowerCase(),
                     new DataPoint(
@@ -184,7 +183,9 @@ export class RecordingService {
 
     // #### Speed
     private updateSpeed(speedRecord: DataPoint) {
-        this.speedHistory.push(speedRecord);
+        this.recording.metricRecords.push(new MetricRecord("speed", speedRecord));
+        Utils.log("Speed: " + speedRecord.value, "debug")
+        Utils.log("Metrics Record: " + JSON.stringify(this.recording.metricRecords), "debug")
 
         this.speedometer.textContent = `${speedRecord.value}`
         Utils.updateChartWith(this.chart, this.chartElement, speedRecord);
@@ -194,10 +195,10 @@ export class RecordingService {
         this.chart = new Chart(this.chartElement, {
             type: 'line',
             data: {
-                labels: this.speedHistory.map(data => Utils.timestampToDate(data.timestamp)),
+                labels: [],
                 datasets: [{
                     label: 'Speed (km/h)',
-                    data: this.speedHistory.map(data => data.value),
+                    data: [],
                     borderColor: Utils.createChartHorizontalGradient(this.chartElement),
                     borderWidth: 2,
                     fill: false,
@@ -235,12 +236,8 @@ export class RecordingService {
     private getCurrentLocation() {
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(
-                (position) => {
-                    this.initMap(position.coords)
-                },
-                (error) => {
-                    Utils.log("Error getting the current location: " + JSON.stringify(error), "error")
-                },
+                (position) => this.initMap(position.coords),
+                (error) => Utils.log("Error getting the current location: " + JSON.stringify(error), "error"),
                 { enableHighAccuracy: true }
             );
         } else {
@@ -261,13 +258,13 @@ export class RecordingService {
     }
 
     private updatePositionOnMap(latLngCoordinates: LatLng) {
-        this.journeyCoordinates.push(latLngCoordinates);
+        this.recording.journeyCoordinates.push(latLngCoordinates);
         this.map.setView(latLngCoordinates, 18);
     }
 
     // #### Simulation Functions
     public simulateMetricsChange(timestamp: number) {
-        this.metrics.forEach((metric) => {
+        this.performanceMetrics.forEach((metric) => {
             const metricRecord = new MetricRecord(metric.name.toLowerCase(), new DataPoint(timestamp, Math.round(Math.random() * 80) + 20))// Random metric between 20 and 100
 
             this.updateMetric(metricRecord)
@@ -276,8 +273,6 @@ export class RecordingService {
 
     public simulateSpeedChange(timestamp: number) {
         const speedRecord = new DataPoint(timestamp, Math.floor(Math.random() * 120) + 60) // Random speed between 60 and 120
-
-        this.speedHistory.push(speedRecord);
 
         this.updateSpeed(speedRecord)
     }

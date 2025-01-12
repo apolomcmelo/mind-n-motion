@@ -1,18 +1,19 @@
 import * as L from "leaflet";
 import {MetricRecord} from "./models/metric-record";
 import {ReportInfo} from "./models/report-info";
-import {Metrics} from "./enums/metrics";
 import {Utils} from "./utils";
 import {DataPoint} from "./models/data-point";
 import Chart from 'chart.js/auto';
+import {Recording} from "./models/recording";
 
 export class ReportService {
-    metrics: ReportInfo[] = []
+    performanceMetrics: ReportInfo[] = []
     speed: ReportInfo
     map: L.Map
     chart: any
     chartElement: CanvasRenderingContext2D
     metricsChartColours: string[]
+    recording: Recording
 
     constructor() {
         this.metricsChartColours = [
@@ -27,17 +28,20 @@ export class ReportService {
         this.chartElement = (document.getElementById('reportChart') as HTMLCanvasElement).getContext('2d')
         this.speed = new ReportInfo("speed")
 
-        Utils.allMetrics().map(metric => this.metrics.push(new ReportInfo(metric.toString().toLowerCase())))
+        Utils.performanceMetrics().map(metric => this.performanceMetrics.push(new ReportInfo(metric.toString().toLowerCase())))
     }
 
     public generateReport() {
-        const speedHistory = JSON.parse(localStorage.getItem("speedHistory")) as DataPoint[]
-        const metricsHistory = this.metrics.map(m => JSON.parse(localStorage.getItem(`${m.name}History`)) as MetricRecord[])
+        const recordingData = (JSON.parse(localStorage.getItem("recording")) as Recording)
+        this.recording = Object.assign(new Recording(), recordingData);
+
+        const speedHistory = this.recording.recordsOf("speed").map(record => record.data)
+        const metricsHistory = this.performanceMetrics.map(metric => this.recording.recordsOf(metric.name))
 
         Utils.updateInfo(speedHistory.map(s => s.value), this.speed, "km/h")
 
         metricsHistory.forEach(metricHistory => {
-            let reportInfo = this.metrics.find(metricInfo => metricInfo.name === metricHistory[0].name)
+            let reportInfo = this.performanceMetrics.find(metricInfo => metricInfo.name === metricHistory[0].name)
             Utils.updateInfo(metricHistory.map(metricRecord => metricRecord.data.value), reportInfo, "")
         })
 
@@ -47,12 +51,11 @@ export class ReportService {
 
     // #### Map
     private initReportMap() {
-        const coordinates = localStorage.getItem("journeyCoordinates")
+        const coordinates = this.recording.journeyCoordinates
 
         if(coordinates) {
-            const parsedCoordinates = JSON.parse(coordinates)
-            const firstCoordinate = parsedCoordinates[0];
-            const lastCoordinate = parsedCoordinates[parsedCoordinates.length - 1];
+            const firstCoordinate = coordinates[0];
+            const lastCoordinate = coordinates[coordinates.length - 1];
 
             this.map = L.map('report-map').setView(firstCoordinate, 15);
 
@@ -61,7 +64,7 @@ export class ReportService {
                 attribution: '&copy; Apolo Mc Melo'
             }).addTo(this.map);
 
-            L.polyline(parsedCoordinates, { color: 'blue' }).addTo(this.map);
+            L.polyline(coordinates, { color: 'blue' }).addTo(this.map);
 
             L.marker(firstCoordinate).addTo(this.map);
             L.marker(lastCoordinate).addTo(this.map);
