@@ -14,45 +14,36 @@ export class RecordingService {
     this.speedHistory = [];
     this.metricsHistory = [];
     this.journeyCoordinates = [];
-    this.metricsIndexMap = new Map();
-    this.metricsIndexMap.set("attention", 1);
-    this.metricsIndexMap.set("engagement", 3);
-    this.metricsIndexMap.set("excitement", 5);
-    this.metricsIndexMap.set("stress", 8);
-    this.metricsIndexMap.set("relaxation", 10);
-    this.metricsIndexMap.set("interest", 12);
+    this.metricsIndexMap = new Map([
+      ["attention", 1],
+      ["engagement", 3],
+      ["excitement", 5],
+      ["stress", 8],
+      ["relaxation", 10],
+      ["interest", 12]
+    ]);
     this.speedometer = document.getElementById("speedometer");
     this.chartElement = document.getElementById("speedChart").getContext("2d");
-    this.logElement = document.getElementById("log");
     this.initMetrics();
     this.initChart();
     this.getCurrentLocation();
     this.connectEmotiv();
   }
-  logOnScreen(message, level = "info") {
-    let log = document.createElement("span");
-    log.textContent = message;
-    log.classList.add(level);
-    this.logElement.appendChild(log);
-  }
   connectEmotiv() {
-    console.log("Connecting to Emotiv...");
-    this.logOnScreen("Connecting to Emotiv...");
-    this.logOnScreen("Emotiv URL: " + properties.emotiv.url, "debug");
-    this.logOnScreen("Emotiv Credentials: " + JSON.stringify(properties.emotiv.credentials), "debug");
+    Utils.log("Connecting to Emotiv...");
+    Utils.log("Emotiv URL: " + properties.emotiv.url, "debug");
+    Utils.log("Emotiv Credentials: " + JSON.stringify(properties.emotiv.credentials), "debug");
     try {
       this.emotivService = new EmotivService(properties.emotiv.url, properties.emotiv.credentials);
       this.emotivService.connect().then(() => {
         this.emotivConnected = true;
-        this.logOnScreen("Connected to Emotiv.");
+        Utils.log("Connected to Emotiv.");
       }).catch((error) => {
-        console.error(error);
-        this.logOnScreen(error, "error");
+        Utils.log(error, "error");
         window.alert(error);
       });
     } catch (error) {
-      console.error(error);
-      this.logOnScreen(error, "error");
+      Utils.log(error, "error");
       window.alert(error);
     }
   }
@@ -61,15 +52,13 @@ export class RecordingService {
     if (this.emotivConnected) {
       this.emotivService.readData([DataStream.METRICS], (dataStream) => this.handleMetricsSubscription(dataStream));
       this.watchId = navigator.geolocation.watchPosition((position) => {
-        console.debug("Coordinates", position.coords);
-        this.logOnScreen("Coordinates: " + JSON.stringify(position.coords), "debug");
+        Utils.log("Coordinates: " + JSON.stringify(position.coords), "debug");
         const currentSpeedInKmPerHour = Math.round(position.coords.speed * 3.6);
         const currentLatLngCoordinate = L.latLng(position.coords.latitude, position.coords.longitude);
         this.updateSpeed(new DataPoint(new Date().getTime(), currentSpeedInKmPerHour));
         this.updatePositionOnMap(currentLatLngCoordinate);
       }, (error) => {
-        console.error("Error watching the position", error);
-        this.logOnScreen("Error watching the position: " + JSON.stringify(error), "error");
+        Utils.log("Error watching the position: " + JSON.stringify(error), "error");
       }, {enableHighAccuracy: true});
     } else {
       window.alert("EMOTIV not connected");
@@ -83,13 +72,10 @@ export class RecordingService {
       let previousLatLng = this.journeyCoordinates[this.journeyCoordinates.length - 1];
       const elapsedTime = (now.getTime() - previousTime) / 1e3;
       const distance = previousLatLng.distanceTo(latLngCoordinates);
-      console.debug("Distance", distance);
-      console.debug("Elapsed time: ", elapsedTime, "debug");
-      this.logOnScreen("Distance: " + distance, "debug");
-      this.logOnScreen("Elapsed time: " + elapsedTime, "debug");
+      Utils.log("Distance: " + distance, "debug");
+      Utils.log("Elapsed time: " + elapsedTime, "debug");
       const currentSpeedInKmPerHour = Math.round(distance / elapsedTime * 3.6);
-      console.debug("Speed", currentSpeedInKmPerHour);
-      this.logOnScreen("Speed: " + currentSpeedInKmPerHour, "debug");
+      Utils.log("Speed: " + currentSpeedInKmPerHour, "debug");
       return new DataPoint(now.getTime(), currentSpeedInKmPerHour);
     }
     return new DataPoint(now.getTime(), 0);
@@ -104,15 +90,12 @@ export class RecordingService {
       const singleMetricHistory = this.metricsHistory.filter((m) => m.name === lowerCaseMetric);
       localStorage.setItem(`${lowerCaseMetric}History`, JSON.stringify(singleMetricHistory));
     });
-    console.debug("Speed History", this.speedHistory);
-    console.debug("Metrics History", this.metricsHistory);
-    console.debug("Journey Coordinates", this.journeyCoordinates);
-    this.logOnScreen("Speed History: " + JSON.stringify(this.speedHistory), "debug");
-    this.logOnScreen("Metrics History: " + JSON.stringify(this.metricsHistory), "debug");
-    this.logOnScreen("Journey Coordinates: " + JSON.stringify(this.journeyCoordinates), "debug");
+    Utils.log("Speed History: " + JSON.stringify(this.speedHistory), "debug");
+    Utils.log("Metrics History: " + JSON.stringify(this.metricsHistory), "debug");
+    Utils.log("Journey Coordinates: " + JSON.stringify(this.journeyCoordinates), "debug");
   }
   resetData() {
-    this.logOnScreen("Resetting data...");
+    Utils.log("Resetting data...");
     localStorage.clear();
     this.speedHistory = [];
     this.metricsHistory = [];
@@ -188,12 +171,10 @@ export class RecordingService {
       navigator.geolocation.getCurrentPosition((position) => {
         this.initMap(position.coords);
       }, (error) => {
-        console.error("Error getting the current location", error);
-        this.logOnScreen("Error getting the current location: " + JSON.stringify(error), "error");
+        Utils.log("Error getting the current location: " + JSON.stringify(error), "error");
       }, {enableHighAccuracy: true});
     } else {
-      console.warn("Geolocation is not supported by this browser.");
-      this.logOnScreen("Geolocation is not supported by this browser.", "warn");
+      Utils.log("Geolocation is not supported by this browser.", "warn");
     }
   }
   initMap(coordinates) {

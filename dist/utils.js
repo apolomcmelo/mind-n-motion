@@ -5,6 +5,14 @@ class UtilsService {
   static get instance() {
     return this._instance || (this._instance = new this());
   }
+  log(message, level = "info") {
+    console[level](message);
+    let log = document.createElement("span");
+    log.textContent = message;
+    log.classList.add(level);
+    let logElement = document.getElementById("log");
+    logElement.appendChild(log);
+  }
   getAverage(array) {
     return Math.round(array.reduce((sum, currentValue) => sum + currentValue, 0) / array.length);
   }
