@@ -33,6 +33,39 @@ class UtilsService
         return new Date(timestamp).toLocaleTimeString('en-US', {hour12: false});
     }
 
+    public formatElapsedTime(elapsedMs: number): string {
+        if (elapsedMs < 0) {
+            throw new Error("End timestamp must be greater than or equal to start timestamp.");
+        }
+
+        if (elapsedMs < 1000) {
+            return `${elapsedMs} milliseconds`;
+        }
+
+        const elapsedSeconds = elapsedMs / 1000;
+        if (elapsedSeconds < 60) {
+            return `${Math.floor(elapsedSeconds)} seconds`;
+        }
+
+        const elapsedMinutes = elapsedSeconds / 60;
+        if (elapsedMinutes < 60) {
+            return `${Math.floor(elapsedMinutes)} minutes`;
+        }
+
+        const elapsedHours = Math.floor(elapsedMinutes / 60);
+        const remainingMinutes = Math.floor(elapsedMinutes % 60);
+
+        if(remainingMinutes == 0) {
+            return `${elapsedHours} hours`;
+        } else {
+            return `${elapsedHours} hours and ${remainingMinutes} minutes`;
+        }
+    }
+
+    public formatDistance(distance: number): string {
+       return distance < 1000 ? `${distance.toFixed(0)}m` : `${(distance / 1000).toFixed(2)}km`;
+    }
+
     // Chart Utils
     public createChartHorizontalGradient(chartElement: CanvasRenderingContext2D) {
         const gradient = chartElement.createLinearGradient(0, 0, chartElement.canvas.width, 0);

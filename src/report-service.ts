@@ -5,10 +5,12 @@ import {Utils} from "./utils";
 import {DataPoint} from "./models/data-point";
 import Chart from 'chart.js/auto';
 import {Recording} from "./models/recording";
+import {getPathLength} from "geolib";
 
 export class ReportService {
     performanceMetrics: ReportInfo[] = []
     speed: ReportInfo
+    distance: HTMLElement
     map: L.Map
     chart: any
     chartElement: CanvasRenderingContext2D
@@ -27,6 +29,7 @@ export class ReportService {
 
         this.chartElement = (document.getElementById('reportChart') as HTMLCanvasElement).getContext('2d')
         this.speed = new ReportInfo("speed")
+        this.distance = document.getElementById("distance")
 
         Utils.performanceMetrics().map(metric => this.performanceMetrics.push(new ReportInfo(metric.toString().toLowerCase())))
     }
@@ -44,6 +47,8 @@ export class ReportService {
             let reportInfo = this.performanceMetrics.find(metricInfo => metricInfo.name === metricHistory[0].name)
             Utils.updateInfo(metricHistory.map(metricRecord => metricRecord.data.value), reportInfo, "")
         })
+
+        this.updateDistanceInfo()
 
         this.initReportMap()
         this.initReportChart(speedHistory, metricsHistory)
@@ -147,6 +152,18 @@ export class ReportService {
                 }
             });
         }
+    }
+
+    public updateDistanceInfo() {
+        const geolibCoordinates = this.recording.journeyCoordinates.map(coord => ({
+            latitude: coord.lat,
+            longitude: coord.lng,
+        }));
+
+        const totalDistance = getPathLength(geolibCoordinates);
+        const totalTime = this.recording.finalTimestamp - this.recording.initialTimestamp;
+
+        this.distance.innerText = `${Utils.formatDistance(totalDistance)} in ${Utils.formatElapsedTime(totalTime)}`;
     }
 
 }
