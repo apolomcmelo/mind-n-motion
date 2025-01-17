@@ -156,7 +156,7 @@ export class ReportService {
                             labels: {
                                 boxWidth: Utils.getLegendSize(),
                                 useBorderRadius: true,
-                                borderRadius: 8,
+                                borderRadius: Utils.getLegendBorderRadius(),
                                 font: {
                                     size: Utils.getChartLabelFontSize()
                                 }

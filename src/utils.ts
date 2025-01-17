@@ -83,19 +83,15 @@ class UtilsService
 
     // Chart Utils
     public getChartLabelFontSize() {
-        if (window.matchMedia('(width: 1080px)').matches && window.matchMedia('(height: 2340px)')) {
-            return 28;
-        } else {
-            return 12;
-        }
+        return this.isMobile() ? 28 : 12;
     }
 
     public getLegendSize() {
-        if (window.matchMedia('(width: 1080px)').matches && window.matchMedia('(height: 2340px)')) {
-            return 20;
-        } else {
-            return 12;
-        }
+        return this.isMobile() ? 20 : 12;
+    }
+
+    public getLegendBorderRadius() {
+        return this.isMobile() ? 16 : 8;
     }
 
     public createChartHorizontalGradient(chartElement: CanvasRenderingContext2D) {
@@ -138,6 +134,14 @@ class UtilsService
 
     public performanceMetrics() {
         return this.allMetrics().filter(metric => metric != "SPEED")
+    }
+
+    public isMobile() {
+        return window.matchMedia('min-width: 360px').matches &&
+               window.matchMedia('max-width: 390px').matches &&
+               window.matchMedia('min-height: 780px').matches &&
+               window.matchMedia('max-height: 850px').matches &&
+               window.matchMedia('-webkit-device-pixel-ratio: 3').matches
     }
 }
 
