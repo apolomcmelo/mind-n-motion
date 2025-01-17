@@ -1,6 +1,6 @@
 @media only screen
-    and (width: 360px)
-    and (height: 780px)
+    and (device-width: 360px)
+    and (device-height: 780px)
     and (-webkit-device-pixel-ratio: 3) {
 
     .app-container {
