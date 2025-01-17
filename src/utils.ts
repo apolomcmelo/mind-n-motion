@@ -137,10 +137,8 @@ class UtilsService
     }
 
     public isMobile() {
-        return window.matchMedia('min-width: 360px').matches &&
-               window.matchMedia('max-width: 390px').matches &&
-               window.matchMedia('min-height: 780px').matches &&
-               window.matchMedia('max-height: 850px').matches &&
+        return window.matchMedia('width: 360px').matches &&
+               window.matchMedia('height: 780px').matches &&
                window.matchMedia('-webkit-device-pixel-ratio: 3').matches
     }
 }
