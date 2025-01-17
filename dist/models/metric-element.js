@@ -6,7 +6,7 @@ export class MetricElement {
     this.progressBackground = this.htmlElement.getElementsByClassName("progress-background")[0];
     this.progressCircle = this.htmlElement.getElementsByClassName("progress-ring")[0];
     this.scoreLabel = this.htmlElement.getElementsByClassName("percentage-label")[0];
-    this.radius = Utils.isMobile() ? 85 : 28;
+    this.radius = Utils.isMobile() ? 35 : 28;
     this.circumference = 2 * Math.PI * 120;
     this.updateSize();
   }
@@ -16,7 +16,7 @@ export class MetricElement {
     this.scoreLabel.textContent = `${score}`;
   }
   updateSize() {
-    const svgSize = (Utils.isMobile() ? 110 : 35).toString();
+    const svgSize = (Utils.isMobile() ? 42 : 35).toString();
     this.progressBackground.setAttribute("cx", svgSize);
     this.progressBackground.setAttribute("cy", svgSize);
     this.progressBackground.setAttribute("r", this.radius.toString());
