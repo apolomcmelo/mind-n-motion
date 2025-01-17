@@ -26,7 +26,7 @@ export class RecordingService {
 
     recording: Recording
     // Remove the hardcoded Subject and Vehicle
-    subject = new Subject("John Doe", 25, "England", Gender.MALE)
+    subject = new Subject("Apolo Melo", 25, "England", Gender.MALE)
     vehicle = new Vehicle("car", "Mini", "Cooper", 123)
 
     constructor() {
