@@ -15,7 +15,7 @@ export class RecordingService {
   constructor() {
     this.emotivConnected = false;
     this.performanceMetrics = [];
-    this.subject = new Subject("John Doe", 25, "England", Gender.MALE);
+    this.subject = new Subject("Apolo Melo", 25, "England", Gender.MALE);
     this.vehicle = new Vehicle("car", "Mini", "Cooper", 123);
     this.metricsIndexMap = new Map([
       ["attention", 1],
