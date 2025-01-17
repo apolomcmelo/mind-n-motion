@@ -3,6 +3,7 @@ import {ReportInfo} from "./models/report-info.js";
 import {Utils} from "./utils.js";
 import Chart from "../_snowpack/pkg/chartjs/auto.js";
 import {Recording} from "./models/recording.js";
+import {getPathLength} from "../_snowpack/pkg/geolib.js";
 export class ReportService {
   constructor() {
     this.performanceMetrics = [];
@@ -16,6 +17,7 @@ export class ReportService {
     ];
     this.chartElement = document.getElementById("reportChart").getContext("2d");
     this.speed = new ReportInfo("speed");
+    this.distance = document.getElementById("distance");
     Utils.performanceMetrics().map((metric) => this.performanceMetrics.push(new ReportInfo(metric.toString().toLowerCase())));
   }
   generateReport() {
@@ -28,6 +30,7 @@ export class ReportService {
       let reportInfo = this.performanceMetrics.find((metricInfo) => metricInfo.name === metricHistory[0].name);
       Utils.updateInfo(metricHistory.map((metricRecord) => metricRecord.data.value), reportInfo, "");
     });
+    this.updateDistanceInfo();
     this.initReportMap();
     this.initReportChart(speedHistory, metricsHistory);
   }
@@ -117,5 +120,14 @@ export class ReportService {
         }
       });
     }
+  }
+  updateDistanceInfo() {
+    const geolibCoordinates = this.recording.journeyCoordinates.map((coord) => ({
+      latitude: coord.lat,
+      longitude: coord.lng
+    }));
+    const totalDistance = getPathLength(geolibCoordinates);
+    const totalTime = this.recording.finalTimestamp - this.recording.initialTimestamp;
+    this.distance.innerText = `${Utils.formatDistance(totalDistance)} in ${Utils.formatElapsedTime(totalTime)}`;
   }
 }

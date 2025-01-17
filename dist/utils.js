@@ -22,6 +22,32 @@ class UtilsService {
   timestampToDate(timestamp) {
     return new Date(timestamp).toLocaleTimeString("en-US", {hour12: false});
   }
+  formatElapsedTime(elapsedMs) {
+    if (elapsedMs < 0) {
+      throw new Error("End timestamp must be greater than or equal to start timestamp.");
+    }
+    if (elapsedMs < 1e3) {
+      return `${elapsedMs} milliseconds`;
+    }
+    const elapsedSeconds = elapsedMs / 1e3;
+    if (elapsedSeconds < 60) {
+      return `${Math.floor(elapsedSeconds)} seconds`;
+    }
+    const elapsedMinutes = elapsedSeconds / 60;
+    if (elapsedMinutes < 60) {
+      return `${Math.floor(elapsedMinutes)} minutes`;
+    }
+    const elapsedHours = Math.floor(elapsedMinutes / 60);
+    const remainingMinutes = Math.floor(elapsedMinutes % 60);
+    if (remainingMinutes == 0) {
+      return `${elapsedHours} hours`;
+    } else {
+      return `${elapsedHours} hours and ${remainingMinutes} minutes`;
+    }
+  }
+  formatDistance(distance) {
+    return distance < 1e3 ? `${distance.toFixed(0)}m` : `${(distance / 1e3).toFixed(2)}km`;
+  }
   createChartHorizontalGradient(chartElement) {
     const gradient = chartElement.createLinearGradient(0, 0, chartElement.canvas.width, 0);
     gradient.addColorStop(0, "#9D00FF");

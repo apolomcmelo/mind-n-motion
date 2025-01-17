@@ -2,6 +2,7 @@
   "imports": {
     "chart.js/auto": "./chartjs/auto.js",
     "emotiv-ts": "./emotiv-ts.js",
+    "geolib": "./geolib.js",
     "leaflet": "./leaflet.js"
   }
 }
