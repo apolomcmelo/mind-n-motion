@@ -98,7 +98,7 @@ class UtilsService {
     return this.allMetrics().filter((metric) => metric != "SPEED");
   }
   isMobile() {
-    return window.matchMedia("width: 360px").matches && window.matchMedia("height: 780px").matches && window.matchMedia("-webkit-device-pixel-ratio: 3").matches;
+    return window.matchMedia("device-width: 360px").matches && window.matchMedia("device-height: 780px").matches && window.matchMedia("-webkit-device-pixel-ratio: 3").matches;
   }
 }
 export const Utils = UtilsService.instance;
