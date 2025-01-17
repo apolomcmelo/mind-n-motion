@@ -61,18 +61,13 @@ class UtilsService {
     return distance < 1e3 ? `${distance.toFixed(0)}m` : `${(distance / 1e3).toFixed(2)}km`;
   }
   getChartLabelFontSize() {
-    if (window.matchMedia("(width: 1080px)").matches && window.matchMedia("(height: 2340px)")) {
-      return 28;
-    } else {
-      return 12;
-    }
+    return this.isMobile() ? 28 : 12;
   }
   getLegendSize() {
-    if (window.matchMedia("(width: 1080px)").matches && window.matchMedia("(height: 2340px)")) {
-      return 20;
-    } else {
-      return 12;
-    }
+    return this.isMobile() ? 20 : 12;
+  }
+  getLegendBorderRadius() {
+    return this.isMobile() ? 16 : 8;
   }
   createChartHorizontalGradient(chartElement) {
     const gradient = chartElement.createLinearGradient(0, 0, chartElement.canvas.width, 0);
@@ -101,6 +96,9 @@ class UtilsService {
   }
   performanceMetrics() {
     return this.allMetrics().filter((metric) => metric != "SPEED");
+  }
+  isMobile() {
+    return window.matchMedia("min-width: 360px").matches && window.matchMedia("max-width: 390px").matches && window.matchMedia("min-height: 780px").matches && window.matchMedia("max-height: 850px").matches && window.matchMedia("-webkit-device-pixel-ratio: 3").matches;
   }
 }
 export const Utils = UtilsService.instance;
