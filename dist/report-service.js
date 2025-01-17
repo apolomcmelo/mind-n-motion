@@ -25,12 +25,13 @@ export class ReportService {
     this.recording = Object.assign(new Recording(), recordingData);
     const speedHistory = this.recording.recordsOf("speed").map((record) => record.data);
     const metricsHistory = this.performanceMetrics.map((metric) => this.recording.recordsOf(metric.name));
+    this.updateRecordingMetadataInfo();
+    this.updateDistanceInfo();
     Utils.updateInfo(speedHistory.map((s) => s.value), this.speed, "km/h");
     metricsHistory.forEach((metricHistory) => {
       let reportInfo = this.performanceMetrics.find((metricInfo) => metricInfo.name === metricHistory[0].name);
       Utils.updateInfo(metricHistory.map((metricRecord) => metricRecord.data.value), reportInfo, "");
     });
-    this.updateDistanceInfo();
     this.initReportMap();
     this.initReportChart(speedHistory, metricsHistory);
   }
@@ -96,11 +97,22 @@ export class ReportService {
               type: "category",
               border: {
                 display: false
+              },
+              ticks: {
+                font: {
+                  size: Utils.getLegendSize()
+                }
               }
             },
             y: {
               title: {display: false, text: "Value"},
-              ticks: {autoSkip: true, maxTicksLimit: 10},
+              ticks: {
+                autoSkip: true,
+                maxTicksLimit: 10,
+                font: {
+                  size: Utils.getChartLabelFontSize()
+                }
+              },
               beginAtZero: true,
               border: {display: false},
               grid: {color: "#282828"}
@@ -111,15 +123,24 @@ export class ReportService {
               display: true,
               position: "bottom",
               labels: {
-                boxWidth: 12,
+                boxWidth: Utils.getLegendSize(),
                 useBorderRadius: true,
-                borderRadius: 6
+                borderRadius: 8,
+                font: {
+                  size: Utils.getChartLabelFontSize()
+                }
               }
             }
           }
         }
       });
     }
+  }
+  updateRecordingMetadataInfo() {
+    const subjectElement = document.getElementById("subject");
+    subjectElement.innerText = this.recording.subject.name;
+    const recordingTimeElement = document.getElementById("recording-time");
+    recordingTimeElement.innerText = Utils.formatTimestamp(this.recording.initialTimestamp);
   }
   updateDistanceInfo() {
     const geolibCoordinates = this.recording.journeyCoordinates.map((coord) => ({

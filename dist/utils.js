@@ -45,8 +45,34 @@ class UtilsService {
       return `${elapsedHours} hours and ${remainingMinutes} minutes`;
     }
   }
+  formatTimestamp(timestamp) {
+    const date = new Date(timestamp);
+    const options = {
+      day: "2-digit",
+      month: "long",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: false
+    };
+    return date.toLocaleTimeString("en-GB", options).replace("at", "-");
+  }
   formatDistance(distance) {
     return distance < 1e3 ? `${distance.toFixed(0)}m` : `${(distance / 1e3).toFixed(2)}km`;
+  }
+  getChartLabelFontSize() {
+    if (window.matchMedia("(width: 1080px)").matches && window.matchMedia("(height: 2340px)")) {
+      return 28;
+    } else {
+      return 12;
+    }
+  }
+  getLegendSize() {
+    if (window.matchMedia("(width: 1080px)").matches && window.matchMedia("(height: 2340px)")) {
+      return 20;
+    } else {
+      return 12;
+    }
   }
   createChartHorizontalGradient(chartElement) {
     const gradient = chartElement.createLinearGradient(0, 0, chartElement.canvas.width, 0);
