@@ -83,15 +83,15 @@ class UtilsService
 
     // Chart Utils
     public getChartLabelFontSize() {
-        return this.isMobile() ? 28 : 12;
+        return this.isMobile() ? 8 : 12;
     }
 
     public getLegendSize() {
-        return this.isMobile() ? 20 : 12;
+        return this.isMobile() ? 8 : 12;
     }
 
     public getLegendBorderRadius() {
-        return this.isMobile() ? 16 : 8;
+        return this.isMobile() ? 6 : 8;
     }
 
     public createChartHorizontalGradient(chartElement: CanvasRenderingContext2D) {
@@ -137,9 +137,9 @@ class UtilsService
     }
 
     public isMobile() {
-        return window.matchMedia('device-width: 360px').matches &&
-               window.matchMedia('device-height: 780px').matches &&
-               window.matchMedia('-webkit-device-pixel-ratio: 3').matches
+        return window.matchMedia('(device-width: 360px)').matches &&
+               window.matchMedia('(device-height: 780px)').matches &&
+               window.matchMedia('(-webkit-device-pixel-ratio: 3)').matches
     }
 }
 

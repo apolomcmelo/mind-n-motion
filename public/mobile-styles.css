@@ -4,126 +4,91 @@
     and (-webkit-device-pixel-ratio: 3) {
 
     .app-container {
-        padding: 5% 50px 70px;
+        padding: 6% 6% 58px;
     }
 
     /* Metrics Section */
     .metrics-container {
-        display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        gap: 120px 5px;
-        text-align: center;
-        margin-top: 70px;
+        gap: 30px 5px;
     }
     .metric {
-        font-size: 24px;
+        font-size: 8px;
     }
     .metric-circle {
-        width: 220px;
-        height: 220px;
-        margin: 2px 0;
+        width: 84px;
+        height: 84px;
+        margin: 0;
     }
-    .metric-circle .progress-background {
-        stroke-width: 25;
-    }
-    .metric-circle .progress-ring {
-        stroke-width: 25;
-    }
+
     .metric-circle .percentage-label {
-        font-size: 44px;
+        font-size: 20px;
     }
 
     /* Speedometer */
     .speedometer {
-        height: 280px;
-        padding: 40px 0;
-    }
-    .speed-value {
-        font-size: 160px;
-    }
-    .speed-unit {
-        font-size: 40px;
+        margin: 20px 0 4px;
+        padding: 0;
     }
 
     /* Chart */
     canvas {
-        max-width: 100%;
-        max-height: 320px;
-        margin: 40px 0;
+        max-height: 120px;
+        margin-top: -18px;
     }
 
     /* Map Section */
-    .map-container, .report-map-container {
-        margin: 50px 0 40px;
-    }
     .map-container {
-        height: 650px;
+        height: 200px;
+        margin-top: 42px;
     }
     .report-map-container {
-        height: 450px;
+        height: 150px;
+        margin: 20px 0;
     }
 
     /* Report Section */
     .recording-container {
-        margin-bottom: 80px
+        margin-bottom: 14px
     }
 
     .report-metrics-container {
-        gap: 90px 0;
-        margin: 60px 0 90px;
+        gap: 28px 0;
+        margin-bottom: 28px;
     }
     .recording-metadata {
-        font-size: 28px;
-        margin: 4px 0;
-    }
-    .report {
-        min-width: 110px;
+        font-size: 10px;
     }
     .title {
-        font-size: 44px;
-        font-weight: 200;
+        font-size: 15px;
+        font-weight: 400;
     }
     .info {
-        font-size: 32px;
+        font-size: 10px;
+        margin: 2px 0;
     }
     #reportChart {
-        min-height: 550px;
-        max-height: 550px;
-        margin: 48px 0;
+        min-height: 294px;
+        max-height: 294px;
     }
 
     /* Button Section */
     .button-container {
         position: fixed;
-        bottom: 75px;
-        min-width: 280px;
-        width: 65%;
-        max-width: 65%;
-        height: 180px;
-        padding: 8px 24px;
-        border-radius: 100px;
+        min-width: 240px;
+        width: 50%;
+        height: 56px;
     }
     .nav__list {
-        font-size: 75px;
+        font-size: 24px;
     }
 
     .start-stop-button {
-        width: 135px;
-        height: 135px;
+        width: 46px;
+        height: 46px;
         border-radius: 50%;
     }
-    .start-stop-button:has(> i.ri-play-fill) {
-        padding-left: 20px;
-    }
     .start-stop-button-icon {
-        font-size: 90px;
-    }
-    .start-stop-button-icon.active {
-        color: var(--default-colour-bright-blue_80);
-    }
-
-    #log span {
-        font-size: 16px;
+        font-size: 30px;
     }
 }
 
