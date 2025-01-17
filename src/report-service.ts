@@ -41,14 +41,14 @@ export class ReportService {
         const speedHistory = this.recording.recordsOf("speed").map(record => record.data)
         const metricsHistory = this.performanceMetrics.map(metric => this.recording.recordsOf(metric.name))
 
+        this.updateRecordingMetadataInfo()
+        this.updateDistanceInfo()
         Utils.updateInfo(speedHistory.map(s => s.value), this.speed, "km/h")
 
         metricsHistory.forEach(metricHistory => {
             let reportInfo = this.performanceMetrics.find(metricInfo => metricInfo.name === metricHistory[0].name)
             Utils.updateInfo(metricHistory.map(metricRecord => metricRecord.data.value), reportInfo, "")
         })
-
-        this.updateDistanceInfo()
 
         this.initReportMap()
         this.initReportChart(speedHistory, metricsHistory)
@@ -154,7 +154,15 @@ export class ReportService {
         }
     }
 
-    public updateDistanceInfo() {
+    private updateRecordingMetadataInfo() {
+        const subjectElement = document.getElementById("subject")
+        subjectElement.innerText = this.recording.subject.name
+
+        const recordingTimeElement = document.getElementById("recording-time")
+        recordingTimeElement.innerText = Utils.formatTimestamp(this.recording.initialTimestamp)
+    }
+
+    private updateDistanceInfo() {
         const geolibCoordinates = this.recording.journeyCoordinates.map(coord => ({
             latitude: coord.lat,
             longitude: coord.lng,

@@ -229,6 +229,12 @@ canvas {
 }
 
 /* Report Section */
+.recording-container {
+    display: flex;
+    justify-content: space-between;
+    text-align: left;
+    margin-bottom: 24px
+}
 .report-speed-container {
     display: flex;
     justify-content: space-between;
@@ -240,6 +246,11 @@ canvas {
     gap: 20px 0;
     text-align: left;
     margin: 12px 0;
+}
+.recording-metadata {
+    font-size: 12px;
+    color: var(--default-colour-all-white_25);
+    margin: 4px 0;
 }
 .report {
     display: flex;

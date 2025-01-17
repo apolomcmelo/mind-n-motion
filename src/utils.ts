@@ -62,6 +62,21 @@ class UtilsService
         }
     }
 
+    formatTimestamp(timestamp: number): string {
+        const date = new Date(timestamp);
+
+        const options: Intl.DateTimeFormatOptions = {
+            day: '2-digit',
+            month: 'long',
+            year: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit',
+            hour12: false,  // 24-hour format
+        };
+
+        return date.toLocaleTimeString("en-GB", options).replace("at", "-");
+    }
+
     public formatDistance(distance: number): string {
        return distance < 1000 ? `${distance.toFixed(0)}m` : `${(distance / 1000).toFixed(2)}km`;
     }
