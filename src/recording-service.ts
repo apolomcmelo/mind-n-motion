@@ -217,7 +217,13 @@ export class RecordingService {
                     },
                     y: {
                         title: { display: false, text: 'Speed (km/h)' },
-                        ticks: { autoSkip: true, maxTicksLimit: 4 },
+                        ticks: {
+                            autoSkip: true,
+                            maxTicksLimit: 4,
+                            font: {
+                                size: Utils.getChartLabelFontSize()
+                            }
+                        },
                         beginAtZero: true,
                         border: { display: false },
                         grid: { color: '#282828' }

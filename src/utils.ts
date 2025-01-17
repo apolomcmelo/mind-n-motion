@@ -62,7 +62,7 @@ class UtilsService
         }
     }
 
-    formatTimestamp(timestamp: number): string {
+    public formatTimestamp(timestamp: number): string {
         const date = new Date(timestamp);
 
         const options: Intl.DateTimeFormatOptions = {
@@ -82,6 +82,22 @@ class UtilsService
     }
 
     // Chart Utils
+    public getChartLabelFontSize() {
+        if (window.matchMedia('(width: 1080px)').matches && window.matchMedia('(height: 2340px)')) {
+            return 28;
+        } else {
+            return 12;
+        }
+    }
+
+    public getLegendSize() {
+        if (window.matchMedia('(width: 1080px)').matches && window.matchMedia('(height: 2340px)')) {
+            return 20;
+        } else {
+            return 12;
+        }
+    }
+
     public createChartHorizontalGradient(chartElement: CanvasRenderingContext2D) {
         const gradient = chartElement.createLinearGradient(0, 0, chartElement.canvas.width, 0);
 

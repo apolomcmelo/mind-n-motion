@@ -128,11 +128,22 @@ export class ReportService {
                             type: 'category',
                             border: {
                                 display: false
+                            },
+                            ticks: {
+                                font: {
+                                    size: Utils.getLegendSize()
+                                }
                             }
                         },
                         y: {
                             title: { display: false, text: 'Value' },
-                            ticks: { autoSkip: true, maxTicksLimit: 10 },
+                            ticks: {
+                                autoSkip: true,
+                                maxTicksLimit: 10,
+                                font: {
+                                    size: Utils.getChartLabelFontSize()
+                                }
+                            },
                             beginAtZero: true,
                             border: { display: false },
                             grid: { color: '#282828' }
@@ -143,9 +154,12 @@ export class ReportService {
                             display: true,
                             position: 'bottom',
                             labels: {
-                                boxWidth: 12,
+                                boxWidth: Utils.getLegendSize(),
                                 useBorderRadius: true,
-                                borderRadius: 6
+                                borderRadius: 8,
+                                font: {
+                                    size: Utils.getChartLabelFontSize()
+                                }
                             }
                         }
                     }
