@@ -92,6 +92,7 @@ export class RecordingService {
     Utils.log("Metrics History: " + JSON.stringify(this.recording.metricRecords.filter((metric) => metric.name != "speed")), "debug");
     Utils.log("Journey Coordinates: " + JSON.stringify(this.recording.journeyCoordinates), "debug");
     this.emotivService.dataStreamService.unsubscribe([DataStream.METRICS], Utils.log);
+    Utils.downloadRecording("recording");
   }
   resetData() {
     Utils.log("Resetting data...");
