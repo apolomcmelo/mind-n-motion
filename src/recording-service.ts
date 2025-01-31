@@ -141,6 +141,8 @@ export class RecordingService {
 
         // Unsubscribe Emotiv data stream
         this.emotivService.dataStreamService.unsubscribe([DataStream.METRICS], Utils.log)
+
+        Utils.downloadRecording("recording")
     }
 
     private resetData() {

@@ -2,6 +2,8 @@ import {ReportInfo} from "./models/report-info";
 import {DataPoint} from "./models/data-point";
 import {Chart} from "chart.js";
 import {Metrics} from "./enums/metrics";
+import {Recording} from "./models/recording";
+import {Subject} from "./models/subject";
 
 class UtilsService
 {
@@ -21,12 +23,17 @@ class UtilsService
         let logElement = document.getElementById("log")
         logElement.appendChild(log)
     }
+
     public getAverage(array: number[]) {
         return Math.round(array.reduce((sum, currentValue) => sum + currentValue, 0) / array.length);
     }
 
     public getMax(array: number[]) {
         return Math.max(...array)
+    }
+
+    public formatSubjectName(subject: Subject) {
+        return subject.name.replace(/ /g, "-").toLowerCase();
     }
 
     public timestampToDate(timestamp: number) {
@@ -75,6 +82,25 @@ class UtilsService
         };
 
         return date.toLocaleTimeString("en-GB", options).replace("at", "-");
+    }
+
+    public formatRecordingTimestamp(timestamp: number): string {
+        const date = new Date(timestamp);
+
+        const options: Intl.DateTimeFormatOptions = {
+            day: '2-digit',
+            month: '2-digit',
+            year: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit',
+            second: '2-digit',
+            hour12: false, // Ensure 24-hour format
+        };
+
+        const formattedDate = new Intl.DateTimeFormat('en-GB', options).format(date);
+
+        // Transform "dd/mm/yyyy, hh:mm:ss" into "ddmmyyyy_hhmmss"
+        return formattedDate.replace(/\//g, '').replace(',', '-').replace(/:/g, '');
     }
 
     public formatDistance(distance: number): string {
@@ -136,10 +162,35 @@ class UtilsService
         return this.allMetrics().filter(metric => metric != "SPEED")
     }
 
+    // Screen Utils
     public isMobile() {
         return window.matchMedia('(device-width: 360px)').matches &&
                window.matchMedia('(device-height: 780px)').matches &&
                window.matchMedia('(-webkit-device-pixel-ratio: 3)').matches
+    }
+
+    // File Utils
+    public downloadRecording(key: string) {
+        const data = localStorage.getItem(key);
+
+        if (!data) {
+            console.error(`No data found in localStorage for key: ${key}`);
+            return;
+        }
+
+        const recording = JSON.parse(data) as Recording;
+        const fileName = `${this.formatSubjectName(recording.subject)}_${this.formatRecordingTimestamp(recording.initialTimestamp)}`;
+        const blob = new Blob([data], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `${fileName}_recording.json`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+
+        URL.revokeObjectURL(url);
     }
 }
 
