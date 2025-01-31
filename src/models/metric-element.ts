@@ -19,7 +19,7 @@ export class MetricElement {
         this.scoreLabel = this.htmlElement.getElementsByClassName("percentage-label")[0]
 
         this.radius = Utils.isMobile() ? 35 : 28
-        this.circumference = 2 * Math.PI * 120;
+        this.circumference = 2 * Math.PI * this.radius;
 
         this.updateSize()
     }
