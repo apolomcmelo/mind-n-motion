@@ -34,7 +34,7 @@ export class RecordingService {
             new Map([
                 ["attention", 1],
                 ["engagement", 3],
-                ["excitement", 5],
+                ["excitement", 6],
                 ["stress", 8],
                 ["relaxation", 10],
                 ["interest", 12]
