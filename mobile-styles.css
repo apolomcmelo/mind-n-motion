@@ -4,12 +4,12 @@
     and (-webkit-device-pixel-ratio: 3) {
 
     .app-container {
-        padding: 6% 6% 58px;
+        padding: 0 6% 58px; /* 6% 6% 58px */
     }
 
     /* Metrics Section */
     .metrics-container {
-        gap: 30px 5px;
+        gap: 20px 5px; /* 30px 5px */
     }
     .metric {
         font-size: 8px;
@@ -29,10 +29,16 @@
         margin: 20px 0 4px;
         padding: 0;
     }
+    .speed-value {
+        font-size: 50px;
+    }
+    .speed-unit {
+        font-size: 10px;
+    }
 
     /* Chart */
     canvas {
-        max-height: 120px;
+        max-height: 100px;
         margin-top: -18px;
     }
 
