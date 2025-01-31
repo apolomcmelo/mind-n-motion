@@ -4,10 +4,11 @@ import {ReportService} from "./report-service.js";
 export class App {
   constructor() {
     this.isRecording = false;
+    this.isRecordingPageVisible = true;
     this.pages = Array.from(document.querySelectorAll(".page"));
     this.settingsButton = document.getElementById("settings-page-button");
-    this.startStopButton = document.getElementById("start-stop-button");
-    this.startStopButtonIcon = document.getElementById("start-stop-button-icon");
+    this.recordingButton = document.getElementById("start-stop-button");
+    this.recordingButtonIcon = document.getElementById("start-stop-button-icon");
     this.reportButton = document.getElementById("report-page-button");
     this.recordingService = new RecordingService();
     this.reportService = new ReportService();
@@ -17,37 +18,58 @@ export class App {
   registerButtonListeners() {
     this.settingsButton.addEventListener("click", (event) => this.loadSettingsPage());
     this.reportButton.addEventListener("click", (event) => this.loadReportPage());
-    this.startStopButton.addEventListener("click", (event) => {
+    this.recordingButton.addEventListener("click", (event) => {
       this.loadRecordingPage();
       if (this.isRecording) {
         this.recordingService.stopRecording();
-      } else {
+        this.toggleRecording();
+      } else if (this.isRecordingPageVisible) {
         this.recordingService.startRecording();
+        this.toggleRecording();
+      } else {
+        this.isRecordingPageVisible = true;
+        this.recordingButtonIcon.classList.add("ri-play-fill");
+        this.recordingButtonIcon.classList.remove("ri-brain-2-line");
       }
-      this.toggleStartStopIcon();
-      this.isRecording = !this.isRecording;
     });
   }
-  toggleStartStopIcon() {
-    this.startStopButtonIcon.classList.toggle("ri-play-fill");
-    this.startStopButtonIcon.classList.toggle("ri-stop-fill");
+  toggleRecording() {
+    this.recordingButtonIcon.classList.toggle("ri-play-fill");
+    this.recordingButtonIcon.classList.toggle("ri-stop-fill");
+    this.isRecording = !this.isRecording;
+  }
+  resetRecordingPage() {
+    this.isRecordingPageVisible = false;
+    this.recordingButtonIcon.classList.remove("ri-stop-fill");
+    this.recordingButtonIcon.classList.remove("ri-play-fill");
+    this.recordingButtonIcon.classList.add("ri-brain-2-line");
   }
   loadSettingsPage() {
+    if (this.isRecording) {
+      alert("Please stop recording before changing page");
+      return;
+    }
     this.settingsButton.classList.add("active");
-    this.startStopButtonIcon.classList.remove("active");
+    this.recordingButtonIcon.classList.remove("active");
     this.reportButton.classList.remove("active");
+    this.resetRecordingPage();
     this.showPage(Pages.SETTINGS);
   }
   loadRecordingPage() {
-    this.startStopButtonIcon.classList.add("active");
+    this.recordingButtonIcon.classList.add("active");
     this.settingsButton.classList.remove("active");
     this.reportButton.classList.remove("active");
     this.showPage(Pages.RECORDING);
   }
   loadReportPage() {
+    if (this.isRecording) {
+      alert("Please stop recording before changing page");
+      return;
+    }
     this.reportButton.classList.add("active");
-    this.startStopButtonIcon.classList.remove("active");
+    this.recordingButtonIcon.classList.remove("active");
     this.settingsButton.classList.remove("active");
+    this.resetRecordingPage();
     this.reportService.generateReport();
     this.showPage(Pages.REPORT);
   }
